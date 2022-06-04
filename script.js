@@ -66,25 +66,25 @@ class Juego {
         this.partida = [["Jugador", 0], ["CPU", 0]];
         this.jerarquia =
             [
-                ["1 de Espada", 1],
-                ["1 de Basto", 2],
-                ["7 de Espada", 3],
-                ["7 de Oro", 4],
-                ["3 de Oro", 5], ["3 de Espada", 5], ["3 de Copa", 5], ["3 de Basto", 5],
-                ["2 de Oro", 6], ["2 de Espada", 6], ["2 de Copa", 6], ["2 de Basto", 6],
-                ["1 de Copa", 7], ["1 de Oro", 7],
-                ["12 de Oro", 8], ["12 de Espada", 8], ["12 de Copa", 8], ["12 de Basto", 8],
-                ["11 de Oro", 9], ["11 de Espada", 9], ["11 de Copa", 9], ["11 de Basto", 9],
-                ["10 de Oro", 10], ["10 de Espada", 10], ["10 de Copa", 10], ["10 de Basto", 10],
-                ["7 de Copa", 11], ["7 de Basto", 11],
-                ["6 de Oro", 12], ["6 de Espada", 12], ["6 de Copa", 12], ["6 de Basto", 12],
-                ["5 de Oro", 13], ["5 de Espada", 13], ["5 de Copa", 13], ["5 de Basto", 13],
-                ["4 de Oro", 14], ["4 de Espada", 14], ["4 de Copa", 14], ["4 de Basto", 14],
+                [1, "Espada", 1],
+                [1, "Basto", 2],
+                [7, "Espada", 3],
+                [7, "Oro", 4],
+                [3, "Oro", 5], [3, "Espada", 5], [3, "Copa", 5], [3, "Basto", 5],
+                [2, "Oro", 6], [2, "Espada", 6], [2, "Copa", 6], [2, "Basto", 6],
+                [1, "Copa", 7], [1, "Oro", 7],
+                [12, "Oro", 8], [12, "Espada", 8], [12, "Copa", 8], [12, "Basto", 8],
+                [11, "Oro", 9], [11, "Espada", 9], [11, "Copa", 9], [11, "Basto", 9],
+                [10, "Oro", 10], [10, "Espada", 10], [10, "Copa", 10], [10, "Basto", 10],
+                [7, "Copa", 11], [7, "Basto", 11],
+                [6, "Oro", 12], [6, "Espada", 12], [6, "Copa", 12], [6, "Basto", 12],
+                [5, "Oro", 13], [5, "Espada", 13], [5, "Copa", 13], [5, "Basto", 13],
+                [4, "Oro", 14], [4, "Espada", 14], [4, "Copa", 14], [4, "Basto", 14],
             ];
     }
 
     jerarquiaCarta(carta) {
-        return this.jerarquia.filter(e => e[0] === carta)[0][1];
+        return this.jerarquia.filter(e => e[0] + " de " + e[1] === carta)[0][2];
     }
 
     duelo(cartaCPU, cartaJugador) {
@@ -111,15 +111,63 @@ class Juego {
         return { fin, ganador };
     }
 
-    jugadorInicia(){
-        if (Math.floor(Math.random() * 2)==1){
+    jugadorInicia() {
+        if (Math.floor(Math.random() * 2) == 1) {
             alert("Inicia Jugador");
             return "Jugador";
         }
-        else{
+        else {
             alert("Inicia CPU");
             return "CPU";
         }
+    }
+
+    calcularEnvido(mano) {
+        let cartasEnvido = [];
+        let envido = 0;
+        for (let i = 0; i < 3; i++) {
+            cartasEnvido.push(juego.jerarquia.filter(e => e[0] + " de " + e[1] === mano.mano[i]));
+        }
+        for (let j = 0; j < 3; j++) {
+            for (let k = j + 1; k < 3; k++) {
+                if (cartasEnvido[j][0][0] < 10 && cartasEnvido[k][0][0] < 10 && cartasEnvido[j][0][1] == cartasEnvido[k][0][1]) {
+                    envido = 20 + cartasEnvido[j][0][0] + cartasEnvido[k][0][0];
+                    break
+                }
+                else if ((Math.min(cartasEnvido[j][0][0], cartasEnvido[k][0][0]) < 10) && cartasEnvido[j][0][1] == cartasEnvido[k][0][1]) {
+                    envido = 20 + Math.min(cartasEnvido[j][0][0], cartasEnvido[k][0][0]);
+                    break;
+                }
+                else if ((Math.min(cartasEnvido[j][0][0], cartasEnvido[k][0][0]) >= 10) && cartasEnvido[j][0][1] == cartasEnvido[k][0][1]) {
+                    envido = 20;
+                    break;
+                }
+            }
+            if (envido < cartasEnvido[j][0][0] && cartasEnvido[j][0][0] < 10)
+                envido = cartasEnvido[j][0][0];
+        }
+        return envido;
+    }
+
+    calcularFlor(mano) {
+        let cartasFlor = [];
+        let flor = 0;
+        let val1 = 0;
+        let val2 = 0;
+        let val3 = 0;
+        for (let i = 0; i < 3; i++) {
+            cartasFlor.push(juego.jerarquia.filter(e => e[0] + " de " + e[1] === mano.mano[i]));
+        }
+        if (cartasFlor[0][0][1] == cartasFlor[1][0][1] && cartasFlor[1][0][1] == cartasFlor[2][0][1]) {
+            if (cartasFlor[0][0][0] < 10)
+                val1 = cartasFlor[0][0][0]
+            if (cartasFlor[1][0][0] < 10)
+                val2 = cartasFlor[1][0][0]
+            if (cartasFlor[2][0][0] < 10)
+                val3 = cartasFlor[2][0][0]
+            flor = 20+val1+val2+val3      
+        }
+        return flor
     }
 }
 
@@ -161,7 +209,11 @@ const manoJugador = new Mano();
 const manoCPU = new Mano();
 const cpu = new CPU();
 
-let res = { fin: false, ganador: juego.jugadorInicia()};
+console.log(juego.calcularFlor(manoJugador));
+console.log(juego.calcularFlor(manoCPU));
+
+
+let res = { fin: false, ganador: juego.jugadorInicia() };
 
 for (let i = 0; i < 3 && res.fin === false; i++) {
     if (res.ganador === "Jugador") {
