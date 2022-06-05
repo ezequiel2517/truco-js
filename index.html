@@ -5,10 +5,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sitio Truco</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Juego de cartas - Truco - Ezequiel</h1>
     <hr>
+    <div class="game">
+        <div class="manoCPU">
+            <div class="cartaCPU"></div>
+            <div class="cartaCPU"></div>
+            <div class="cartaCPU"></div>
+        </div>
+        <div class="manoCPUJugada">
+            <div class="cartaCPUJugada"></div>
+            <div class="cartaCPUJugada"></div>
+            <div class="cartaCPUJugada"></div>
+        </div>
+        <div class="mesa"></div>
+        <div class="manoJugadorJugada">
+            <div class="cartaJugadorJugada"></div>
+            <div class="cartaJugadorJugada"></div>
+            <div class="cartaJugadorJugada"></div>
+        </div>
+        <div class="manoJugador">
+            <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
+            <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
+            <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

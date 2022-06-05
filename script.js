@@ -186,14 +186,13 @@ class CPU {
             }
         }
         if (ganaCPU === true) {
-            alert("CPU juega la carta: " + cartaCPU);
             manoCPU.jugarCarta(cartaCPU);
         }
         else if (ganaCPU === false) {
             cartaCPU = manoCPU.mano.pop();
-            alert("CPU juega la carta: " + cartaCPU);
             manoCPU.jugarCarta(cartaCPU);
         }
+        return cartaCPU;
     }
 
     jugarCarta() {
@@ -209,24 +208,93 @@ const manoJugador = new Mano();
 const manoCPU = new Mano();
 const cpu = new CPU();
 
-console.log(juego.calcularFlor(manoJugador));
-console.log(juego.calcularFlor(manoCPU));
+// console.log(juego.calcularFlor(manoJugador));
+// console.log(juego.calcularFlor(manoCPU));
 
 
-let res = { fin: false, ganador: juego.jugadorInicia() };
+// let res = { fin: false, ganador: juego.jugadorInicia() };
 
-for (let i = 0; i < 3 && res.fin === false; i++) {
-    if (res.ganador === "Jugador") {
-        manoJugador.jugarCarta(prompt("Tu mano es: " + manoJugador.getMano() + " ¿Que carta quieres jugar?"));
-        cpu.responderCarta(i);
+// for (let i = 0; i < 3 && res.fin === false; i++) {
+//     if (res.ganador === "Jugador") {
+//         manoJugador.jugarCarta(prompt("Tu mano es: " + manoJugador.getMano() + " ¿Que carta quieres jugar?"));
+//         cpu.responderCarta(i);
+//     }
+//     else {
+//         cpu.jugarCarta();
+//         manoJugador.jugarCarta(prompt("Tu mano es: " + manoJugador.getMano() + " ¿Que carta quieres jugar?"));
+//     }
+
+//     res = juego.duelo(manoCPU.manoJugada[i], manoJugador.manoJugada[i]);
+// }
+
+
+function cargarMano(manoJugador, manoCPU){
+    let i = 0;
+    for (let carta of document.getElementsByClassName("cartaJugador") ){
+        carta.setAttribute("id", manoJugador[i])
+        i++;
     }
-    else {
-        cpu.jugarCarta();
-        manoJugador.jugarCarta(prompt("Tu mano es: " + manoJugador.getMano() + " ¿Que carta quieres jugar?"));
+    i=0;
+    for (let carta of document.getElementsByClassName("cartaCPU") ){
+        carta.setAttribute("id", manoCPU[i])
+        i++;
     }
-
-    res = juego.duelo(manoCPU.manoJugada[i], manoJugador.manoJugada[i]);
 }
 
+function cargarCarta(mano){
+    for(let i=0; i<3; i++){
+        if (mano[i].includes("Basto"))
+        {
+            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*3 + "px";
+        }
+        else if(mano[i].includes("Oro"))
+        {
+            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*0 + "px";
+        }
+        else if(mano[i].includes("Espada"))
+        {
+            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*2 + "px";
+        }
+        else if(mano[i].includes("Copa"))
+        {
+            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*1 + "px";
+        }
+        document.getElementById(mano[i]).style.backgroundPositionX = -83.3*(mano[i].split(" ")[0]-1) + "px";
+    } 
+}
+cargarMano(manoJugador.mano, manoCPU.mano);
+cargarCarta(manoJugador.mano);
+cargarCarta(manoCPU.mano);
 
-
+function lanzarCarta(carta){
+    if (manoJugador.mano.length==3){
+        manoJugador.jugarCarta(carta.id);
+        document.getElementsByClassName("cartaJugadorJugada")[0].style.cssText =carta.style.cssText ;
+        document.getElementsByClassName("cartaJugadorJugada")[0].style.visibility="visible"
+        carta.style.visibility="hidden"
+        let cartaCPU = cpu.responderCarta(0);
+        document.getElementsByClassName("cartaCPUJugada")[0].style.cssText = document.getElementById(cartaCPU).style.cssText;
+        document.getElementById(cartaCPU).style.visibility="hidden"
+        document.getElementsByClassName("cartaCPUJugada")[0].style.visibility="visible"
+    }
+    else if (manoJugador.mano.length==2){
+        manoJugador.jugarCarta(carta.id);
+        document.getElementsByClassName("cartaJugadorJugada")[1].style.cssText =carta.style.cssText ;
+        document.getElementsByClassName("cartaJugadorJugada")[1].style.visibility="visible"
+        carta.style.visibility="hidden"
+        let cartaCPU = cpu.responderCarta(1);
+        document.getElementsByClassName("cartaCPUJugada")[1].style.cssText = document.getElementById(cartaCPU).style.cssText;
+        document.getElementById(cartaCPU).style.visibility="hidden"
+        document.getElementsByClassName("cartaCPUJugada")[1].style.visibility="visible"
+    }
+    else{
+        manoJugador.jugarCarta(carta.id);
+        document.getElementsByClassName("cartaJugadorJugada")[2].style.cssText =carta.style.cssText ;
+        document.getElementsByClassName("cartaJugadorJugada")[2].style.visibility="visible"
+        carta.style.visibility="hidden"
+        let cartaCPU = cpu.responderCarta(2);
+        document.getElementsByClassName("cartaCPUJugada")[2].style.cssText = document.getElementById(cartaCPU).style.cssText;
+        document.getElementById(cartaCPU).style.visibility="hidden"
+        document.getElementsByClassName("cartaCPUJugada")[2].style.visibility="visible"
+    }
+}
