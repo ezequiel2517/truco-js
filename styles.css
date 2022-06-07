@@ -1,3 +1,12 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  background-color: rgb(234, 236, 199);
+}
+
 .game {
   display: flex;
   flex-direction: column;
@@ -5,12 +14,11 @@
 }
 
 .mesa {
-  background-color: #8BC6EC;
-  background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+  background-color: #a3c891;
   border: 15px solid grey;
-  border-radius: 100px;
-  width: 600px;
-  height: 350px;
+  border-radius: 50%;
+  width: 550px;
+  height: 500px;
   box-shadow: 7px 7px lightgrey;
 }
 
@@ -18,68 +26,15 @@
   display: flex;
   position: absolute;
   justify-content: center;
-  top: 620px;
-}
-
-.manoJugadorJugada {
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  top: 450px;
-  gap: 10px;
-}
-
-.manoCPUJugada {
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  top: 320px;
-  gap: 10px;
+  top: 560px;
 }
 
 .manoCPU {
   display: flex;
-  position: relative;
+  position: absolute;
   justify-content: center;
-  top: 40px;
-}
-
-.cartaCPU {
-  height: 128px;
-  width: 83px;
-  position: relative;
-  transition: transform 0.2s;
-  background-image: url("images/baraja.png");
-  background-size: 1000px;
-  background-position-x: -83.3px;
-  background-position-y: -510.8px;
-}
-
-.cartaCPU:nth-child(1) {
-  transform: translateY(0px) rotate(-20deg);
-  right: -15px;
-  top: 10px;
-}
-
-.cartaCPU:nth-child(3) {
-  transform: translateY(0px) rotate(20deg);
-  right: 15px;
-  top: 10px;
-}
-
-.cartaCPU:nth-child(1):hover {
-  z-index: 2;
-  transform: translate(-10px) rotate(-15deg) scale(1.2);
-}
-
-.cartaCPU:nth-child(2):hover {
-  z-index: 2;
-  transform: scale(1.2);
-}
-
-.cartaCPU:nth-child(3):hover {
-  z-index: 2;
-  transform: translate(-10px) rotate(15deg) scale(1.2);
+  top: 100px;
+  transform: scale(0.7);
 }
 
 .cartaJugador {
@@ -89,6 +44,81 @@
   transition: transform 0.2s;
   background-image: url("images/baraja.png");
   background-size: 1000px;
+  border: 3px solid black;
+  border-radius: 10px;
+}
+.cartaJugador:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(-15deg) scale(1.2);
+}
+.cartaJugador:nth-child(2):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(0deg) scale(1.2);
+}
+.cartaJugador:nth-child(3):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(15deg) scale(1.2);
+}
+.cartaJugador:nth-child(1) {
+  transform: translateY(0px) rotate(-20deg);
+  top: 10px;
+  right: -15px;
+}
+.cartaJugador:nth-child(3) {
+  transform: translateY(0px) rotate(20deg);
+  top: 10px;
+  right: 15px;
+}
+
+.cartaCPU {
+  height: 128px;
+  width: 83px;
+  position: relative;
+  transition: transform 0.2s;
+  background-image: url("images/baraja.png");
+  background-size: 1000px;
+  border: 3px solid black;
+  border-radius: 10px;
+  background-position-x: -83.3px;
+  background-position-y: -510.8px;
+}
+.cartaCPU:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(-15deg) scale(1.2);
+}
+.cartaCPU:nth-child(2):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(0deg) scale(1.2);
+}
+.cartaCPU:nth-child(3):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(15deg) scale(1.2);
+}
+.cartaCPU:nth-child(1) {
+  transform: translateY(0px) rotate(-20deg);
+  top: 10px;
+  right: -15px;
+}
+.cartaCPU:nth-child(3) {
+  transform: translateY(0px) rotate(20deg);
+  top: 10px;
+  right: 15px;
+}
+
+.manoJugadorJugada {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  top: 410px;
+  gap: 10px;
+}
+
+.manoCPUJugada {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  top: 280px;
+  gap: 10px;
 }
 
 .cartaJugadorJugada {
@@ -99,6 +129,9 @@
   background-position-x: -83.3px;
   background-position-y: -510.8px;
   visibility: hidden;
+  border: 3px solid black;
+  border-radius: 10px;
+  transform: scale(0.8);
 }
 
 .cartaCPUJugada {
@@ -109,33 +142,13 @@
   background-position-x: -83.3px;
   background-position-y: -510.8px;
   visibility: hidden;
+  border: 3px solid black;
+  border-radius: 10px;
+  transform: scale(0.8);
 }
 
-.cartaJugador:nth-child(1) {
-  transform: translateY(0px) rotate(-20deg);
-  right: -15px;
-  top: 10px;
-}
-
-.cartaJugador:nth-child(3) {
-  transform: translateY(0px) rotate(20deg);
-  right: 15px;
-  top: 10px;
-}
-
-.cartaJugador:nth-child(1):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(-15deg) scale(1.2);
-}
-
-.cartaJugador:nth-child(2):hover {
-  z-index: 2;
-  transform: scale(1.2);
-}
-
-.cartaJugador:nth-child(3):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(15deg) scale(1.2);
+.iconPlayer {
+  width: 150px;
 }
 
 /*# sourceMappingURL=styles.css.map */
