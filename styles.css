@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&display=swap");
 * {
   margin: 0px;
   padding: 0px;
@@ -46,6 +47,8 @@ body {
   background-size: 1000px;
   border: 3px solid black;
   border-radius: 10px;
+  background-position-x: -83.3px;
+  background-position-y: -510.8px;
 }
 .cartaJugador:nth-child(1):hover {
   z-index: 2;
@@ -105,7 +108,7 @@ body {
   right: 15px;
 }
 
-.manoJugadorJugada {
+.manoJugadorPlay {
   display: flex;
   position: absolute;
   justify-content: center;
@@ -113,7 +116,7 @@ body {
   gap: 10px;
 }
 
-.manoCPUJugada {
+.manoCPUPlay {
   display: flex;
   position: absolute;
   justify-content: center;
@@ -121,7 +124,7 @@ body {
   gap: 10px;
 }
 
-.cartaJugadorJugada {
+.cartaJugadorPlay {
   height: 128px;
   width: 83px;
   background-image: url("images/baraja.png");
@@ -134,7 +137,7 @@ body {
   transform: scale(0.8);
 }
 
-.cartaCPUJugada {
+.cartaCPUPlay {
   height: 128px;
   width: 83px;
   background-image: url("images/baraja.png");
@@ -149,6 +152,103 @@ body {
 
 .iconPlayer {
   width: 150px;
+}
+
+#mensaje {
+  position: absolute;
+  top: 350px;
+  font-size: 50px;
+  font-family: "Lilita One", cursive;
+  visibility: hidden;
+  z-index: 100;
+}
+
+.mensajeAlerta {
+  animation-name: animationAlert;
+  animation-duration: 0.5s;
+}
+
+@keyframes animationAlert {
+  100% {
+    transform: scale(1);
+    visibility: visible;
+  }
+  95% {
+    transform: scale(1.1);
+    visibility: visible;
+  }
+  90% {
+    transform: scale(1.2);
+    visibility: visible;
+  }
+  85% {
+    transform: scale(1.3);
+    visibility: visible;
+  }
+  80% {
+    transform: scale(1.4);
+    visibility: visible;
+  }
+  75% {
+    transform: scale(1.5);
+    visibility: visible;
+  }
+  70% {
+    transform: scale(1.6);
+    visibility: visible;
+  }
+  65% {
+    transform: scale(1.7);
+    visibility: visible;
+  }
+  60% {
+    transform: scale(1.8);
+    visibility: visible;
+  }
+  55% {
+    transform: scale(1.9);
+    visibility: visible;
+  }
+  50% {
+    transform: scale(2);
+    visibility: visible;
+  }
+  45% {
+    transform: scale(2.1);
+    visibility: visible;
+  }
+  40% {
+    transform: scale(2.2);
+    visibility: visible;
+  }
+  35% {
+    transform: scale(2.3);
+    visibility: visible;
+  }
+  30% {
+    transform: scale(2.4);
+    visibility: visible;
+  }
+  25% {
+    transform: scale(2.5);
+    visibility: visible;
+  }
+  20% {
+    transform: scale(2.6);
+    visibility: visible;
+  }
+  15% {
+    transform: scale(2.7);
+    visibility: visible;
+  }
+  10% {
+    transform: scale(2.8);
+    visibility: visible;
+  }
+  5% {
+    transform: scale(2.9);
+    visibility: visible;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

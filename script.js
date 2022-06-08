@@ -1,3 +1,89 @@
+class Interfaz {
+    constructor() { };
+
+    async mensaje(){
+        document.getElementById("mensaje").classList.add("mensajeAlerta");
+        await new Promise(r => setTimeout(r, 500));
+        document.getElementById("mensaje").classList.remove("mensajeAlerta");
+    }
+
+    reset() {
+        barajaJuego = new Baraja();
+        manoJugador = new Mano();
+        manoCPU = new Mano();
+
+        for (let carta of document.getElementsByClassName("cartaJugadorPlay")) {
+            carta.style.visibility="hidden";
+        }
+
+        for (let carta of document.getElementsByClassName("cartaCPUPlay")) {
+            carta.style.visibility="hidden";
+        }
+
+        for (let carta of document.getElementsByClassName("cartaJugador")) {
+            carta.style.visibility="visible";
+            carta.removeAttribute("id");
+        }
+
+        for (let carta of document.getElementsByClassName("cartaCPU")) {
+            carta.style.visibility="visible";
+            carta.style.backgroundPositionX= "-83.3px";
+            carta.style.backgroundPositionY ="-510.8px";
+        }
+
+
+
+
+        this.cargarMano(manoJugador.mano, manoCPU.mano);
+        for (let i = 0; i < 3; i++) {
+            this.cargarCarta(manoJugador.mano[i]);
+        }
+    }
+
+    cargarMano(manoJugador, manoCPU) {
+        let i = 0;
+        for (let carta of document.getElementsByClassName("cartaJugador")) {
+            carta.setAttribute("id", manoJugador[i])
+            i++;
+        }
+        i = 0;
+
+        for (let carta of document.getElementsByClassName("cartaCPU")) {
+            carta.setAttribute("id", manoCPU[i])
+            i++;
+        }
+    }
+
+    cargarCarta(carta) {
+        if (carta.includes("Basto")) {
+            document.getElementById(carta).style.backgroundPositionY = -127.7 * 3 + "px";
+        }
+        else if (carta.includes("Oro")) {
+            document.getElementById(carta).style.backgroundPositionY = -127.7 * 0 + "px";
+        }
+        else if (carta.includes("Espada")) {
+            document.getElementById(carta).style.backgroundPositionY = -127.7 * 2 + "px";
+        }
+        else if (carta.includes("Copa")) {
+            document.getElementById(carta).style.backgroundPositionY = -127.7 * 1 + "px";
+        }
+        document.getElementById(carta).style.backgroundPositionX = -83.3 * (carta.split(" ")[0] - 1) + "px";
+    }
+
+    jugarCarta(carta, jugador) {
+        let posicionCarta = 0;
+        if (jugador.includes("CPU")) {
+            posicionCarta = manoCPU.manoJugada.length - 1;
+        }
+        else {
+            posicionCarta = manoJugador.manoJugada.length - 1;
+        }
+        document.getElementsByClassName(jugador)[posicionCarta].style.cssText = document.getElementById(carta).style.cssText;
+        document.getElementById(carta).style.visibility = "hidden";
+        document.getElementsByClassName(jugador)[posicionCarta].style.visibility = "visible";
+    }
+}
+
 class Baraja {
     constructor() {
         this.baraja = [];
@@ -9,7 +95,6 @@ class Baraja {
         this.baraja = [];
         const palos = ["Copa", "Basto", "Espada", "Oro"];
         const numeros = [1, 2, 3, 4, 5, 6, 7, 10, 11, 12];
-
         for (let i in numeros) {
             for (let j in palos) {
                 this.baraja.push(numeros[i] + " de " + palos[j]);
@@ -45,67 +130,56 @@ class Mano {
         }
     }
 
-    jugarCarta(carta) {
+    jugarCarta(carta, idcartaJugador) {
         this.manoJugada.push(carta);
         this.mano = this.mano.filter(e => e !== carta);
+        interfaz.jugarCarta(carta, idcartaJugador);
     }
-
-    getMano() {
-        let manoRes = "";
-        let numMano = this.mano.length;
-        for (let i = 0; i < numMano; i++) {
-            manoRes = manoRes + " | " + this.mano[i];
-        }
-        return manoRes;
-    }
-
 }
 
 class Juego {
     constructor() {
-        this.partida = [["Jugador", 0], ["CPU", 0]];
+        this.partida = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
         this.jerarquia =
             [
-                [1, "Espada", 1],
-                [1, "Basto", 2],
-                [7, "Espada", 3],
-                [7, "Oro", 4],
-                [3, "Oro", 5], [3, "Espada", 5], [3, "Copa", 5], [3, "Basto", 5],
-                [2, "Oro", 6], [2, "Espada", 6], [2, "Copa", 6], [2, "Basto", 6],
-                [1, "Copa", 7], [1, "Oro", 7],
-                [12, "Oro", 8], [12, "Espada", 8], [12, "Copa", 8], [12, "Basto", 8],
-                [11, "Oro", 9], [11, "Espada", 9], [11, "Copa", 9], [11, "Basto", 9],
-                [10, "Oro", 10], [10, "Espada", 10], [10, "Copa", 10], [10, "Basto", 10],
-                [7, "Copa", 11], [7, "Basto", 11],
-                [6, "Oro", 12], [6, "Espada", 12], [6, "Copa", 12], [6, "Basto", 12],
-                [5, "Oro", 13], [5, "Espada", 13], [5, "Copa", 13], [5, "Basto", 13],
-                [4, "Oro", 14], [4, "Espada", 14], [4, "Copa", 14], [4, "Basto", 14],
+                { Num: 1, Palo: "Espada", Posc: 1 },
+                { Num: 1, Palo: "Basto", Posc: 2 },
+                { Num: 7, Palo: "Espada", Posc: 3 },
+                { Num: 7, Palo: "Oro", Posc: 4 },
+                { Num: 3, Palo: "Oro", Posc: 5 }, { Num: 3, Palo: "Espada", Posc: 5 }, { Num: 3, Palo: "Copa", Posc: 5 }, { Num: 3, Palo: "Basto", Posc: 5 },
+                { Num: 2, Palo: "Oro", Posc: 6 }, { Num: 2, Palo: "Espada", Posc: 6 }, { Num: 2, Palo: "Copa", Posc: 6 }, { Num: 2, Palo: "Basto", Posc: 6 },
+                { Num: 1, Palo: "Copa", Posc: 7 }, { Num: 1, Palo: "Oro", Posc: 7 },
+                { Num: 12, Palo: "Oro", Posc: 8 }, { Num: 12, Palo: "Espada", Posc: 8 }, { Num: 12, Palo: "Copa", Posc: 8 }, { Num: 12, Palo: "Basto", Posc: 8 },
+                { Num: 11, Palo: "Oro", Posc: 9 }, { Num: 11, Palo: "Espada", Posc: 9 }, { Num: 11, Palo: "Copa", Posc: 9 }, { Num: 11, Palo: "Basto", Posc: 9 },
+                { Num: 10, Palo: "Oro", Posc: 10 }, { Num: 10, Palo: "Espada", Posc: 10 }, { Num: 10, Palo: "Copa", Posc: 10 }, { Num: 10, Palo: "Basto", Posc: 10 },
+                { Num: 7, Palo: "Copa", Posc: 11 }, { Num: 7, Palo: "Basto", Posc: 11 },
+                { Num: 6, Palo: "Oro", Posc: 12 }, { Num: 6, Palo: "Espada", Posc: 12 }, { Num: 6, Palo: "Copa", Posc: 12 }, { Num: 6, Palo: "Basto", Posc: 12 },
+                { Num: 5, Palo: "Oro", Posc: 13 }, { Num: 5, Palo: "Espada", Posc: 13 }, { Num: 5, Palo: "Copa", Posc: 13 }, { Num: 5, Palo: "Basto", Posc: 13 },
+                { Num: 4, Palo: "Oro", Posc: 14 }, { Num: 4, Palo: "Espada", Posc: 14 }, { Num: 4, Palo: "Copa", Posc: 14 }, { Num: 4, Palo: "Basto", Posc: 14 },
             ];
     }
 
     jerarquiaCarta(carta) {
-        return this.jerarquia.filter(e => e[0] + " de " + e[1] === carta)[0][2];
+        return this.jerarquia.filter(e => e.Num + " de " + e.Palo === carta)[0].Posc;
     }
 
-    duelo(cartaCPU, cartaJugador) {
+    async duelo(cartaCPU, cartaJugador) {
         let fin = false;
         let ganador;
         if (this.jerarquiaCarta(cartaJugador) < this.jerarquiaCarta(cartaCPU)) {
-            alert("Mano para Jugador")
-            this.partida[0][1]++;
+            this.partida.filter(e => e.Jugador === "Jugador")[0].Puntos++;
             ganador = "Jugador";
         }
         else {
-            alert("Mano para CPU")
-            this.partida[1][1]++;
+            this.partida.filter(e => e.Jugador === "CPU")[0].Puntos++;
             ganador = "CPU";
         }
-        if (this.partida[0][1] == 2) {
-            alert("Gana Jugador: Jugador " + this.partida[0][1] + " - CPU " + this.partida[1][1])
-            fin = true;
-        }
-        else if (this.partida[1][1] == 2) {
-            alert("Gana CPU: CPU " + this.partida[1][1] + " - Jugador " + this.partida[0][1])
+        if (this.partida.filter(e => e.Jugador === "Jugador")[0].Puntos == 2 ||
+            this.partida.filter(e => e.Jugador === "CPU")[0].Puntos == 2) {
+            await new Promise(r => setTimeout(r, 2000));
+            interfaz.reset();
+            this.partida[0].Puntos=0;
+            this.partida[1].Puntos=0;
             fin = true;
         }
         return { fin, ganador };
@@ -113,15 +187,15 @@ class Juego {
 
     jugadorInicia() {
         if (Math.floor(Math.random() * 2) == 1) {
-            alert("Inicia Jugador");
             return "Jugador";
         }
         else {
-            alert("Inicia CPU");
             return "CPU";
         }
     }
 
+    //***CALCULO DE ENVIDO Y FLOR EN PRUEBA***
+    /*
     calcularEnvido(mano) {
         let cartasEnvido = [];
         let envido = 0;
@@ -165,136 +239,86 @@ class Juego {
                 val2 = cartasFlor[1][0][0]
             if (cartasFlor[2][0][0] < 10)
                 val3 = cartasFlor[2][0][0]
-            flor = 20+val1+val2+val3      
+            flor = 20 + val1 + val2 + val3
         }
         return flor
     }
+    */
 }
 
 class CPU {
     constructor() { }
 
-    responderCarta(cartaJugador) {
+     async responderCarta(cartaJugador) {
+        await new Promise(r => setTimeout(r, 2000));
+
         let numCartas = manoCPU.mano.length;
         let ganaCPU = false;
-        let cartaCPU = 4;
+        let cartaCPU;
         for (let i = 0; i < numCartas; i++) {
-            if (juego.jerarquiaCarta(manoCPU.mano[i]) < juego.jerarquiaCarta(manoJugador.manoJugada[cartaJugador])) {
+            if (juego.jerarquiaCarta(manoCPU.mano[i]) < juego.jerarquiaCarta(cartaJugador)) {
                 cartaCPU = manoCPU.mano[i];
                 ganaCPU = true;
                 break;
             }
         }
         if (ganaCPU === true) {
-            manoCPU.jugarCarta(cartaCPU);
+            interfaz.cargarCarta(cartaCPU);
+            manoCPU.jugarCarta(cartaCPU, "cartaCPUPlay");
         }
-        else if (ganaCPU === false) {
+        else {
             cartaCPU = manoCPU.mano.pop();
-            manoCPU.jugarCarta(cartaCPU);
+            interfaz.cargarCarta(cartaCPU);
+            manoCPU.jugarCarta(cartaCPU, "cartaCPUPlay");
         }
         return cartaCPU;
     }
 
     jugarCarta() {
         let cartaCPU = manoCPU.mano.pop();
-        alert("CPU juega la carta: " + cartaCPU);
-        manoCPU.jugarCarta(cartaCPU);
+        interfaz.cargarCarta(cartaCPU);
+        manoCPU.jugarCarta(cartaCPU, "cartaCPUPlay");
     }
+
 }
 
 const juego = new Juego();
-const barajaJuego = new Baraja();
-const manoJugador = new Mano();
-const manoCPU = new Mano();
+let barajaJuego = new Baraja();
+let manoJugador = new Mano();
+let manoCPU = new Mano();
+const interfaz = new Interfaz();
+interfaz.reset();
 const cpu = new CPU();
 
-// console.log(juego.calcularFlor(manoJugador));
-// console.log(juego.calcularFlor(manoCPU));
-
-
-// let res = { fin: false, ganador: juego.jugadorInicia() };
-
-// for (let i = 0; i < 3 && res.fin === false; i++) {
-//     if (res.ganador === "Jugador") {
-//         manoJugador.jugarCarta(prompt("Tu mano es: " + manoJugador.getMano() + " ¿Que carta quieres jugar?"));
-//         cpu.responderCarta(i);
-//     }
-//     else {
-//         cpu.jugarCarta();
-//         manoJugador.jugarCarta(prompt("Tu mano es: " + manoJugador.getMano() + " ¿Que carta quieres jugar?"));
-//     }
-
-//     res = juego.duelo(manoCPU.manoJugada[i], manoJugador.manoJugada[i]);
-// }
-
-
-function cargarMano(manoJugador, manoCPU){
-    let i = 0;
-    for (let carta of document.getElementsByClassName("cartaJugador") ){
-        carta.setAttribute("id", manoJugador[i])
-        i++;
-    }
-    i=0;
-    for (let carta of document.getElementsByClassName("cartaCPU") ){
-        carta.setAttribute("id", manoCPU[i])
-        i++;
-    }
-}
-
-function cargarCarta(mano){
-    for(let i=0; i<3; i++){
-        if (mano[i].includes("Basto"))
-        {
-            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*3 + "px";
+async function lanzarCarta(carta) {
+    manoJugador.jugarCarta(carta.id, "cartaJugadorPlay");
+    if (manoCPU.mano.length > 0) {
+        if (manoCPU.manoJugada.length < manoJugador.manoJugada.length) {
+            let res = await juego.duelo(await cpu.responderCarta(carta.id), carta.id);
+            if (res.ganador === "CPU" && !res.fin) {
+                if (manoCPU.mano.length > 0) {
+                    cpu.jugarCarta();                
+                }
+            }
+            if (!res.fin){
+            await new Promise(r => setTimeout(r, 1000));
+            await interfaz.mensaje();
+            }
         }
-        else if(mano[i].includes("Oro"))
-        {
-            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*0 + "px";
+        else if (manoCPU.manoJugada.length === manoJugador.manoJugada.length) {
+            let res = await juego.duelo(manoCPU.manoJugada[manoCPU.manoJugada.length - 1], manoJugador.manoJugada[manoJugador.manoJugada.length - 1]);
+            if (!res.fin){
+                if (res.ganador == "CPU") {
+                    cpu.jugarCarta();       
+                }           
+                await new Promise(r => setTimeout(r, 1000));
+                await interfaz.mensaje();
+            }
         }
-        else if(mano[i].includes("Espada"))
-        {
-            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*2 + "px";
-        }
-        else if(mano[i].includes("Copa"))
-        {
-            document.getElementById(mano[i]).style.backgroundPositionY = -127.7*1 + "px";
-        }
-        document.getElementById(mano[i]).style.backgroundPositionX = -83.3*(mano[i].split(" ")[0]-1) + "px";
-    } 
-}
-cargarMano(manoJugador.mano, manoCPU.mano);
-cargarCarta(manoJugador.mano);
-// cargarCarta(manoCPU.mano);
-
-function lanzarCarta(carta){
-    if (manoJugador.mano.length==3){
-        manoJugador.jugarCarta(carta.id);
-        document.getElementsByClassName("cartaJugadorJugada")[0].style.cssText =carta.style.cssText ;
-        document.getElementsByClassName("cartaJugadorJugada")[0].style.visibility="visible"
-        carta.style.display="none"
-        let cartaCPU = cpu.responderCarta(0);
-        document.getElementsByClassName("cartaCPUJugada")[0].style.cssText = document.getElementById(cartaCPU).style.cssText;
-        document.getElementById(cartaCPU).style.visibility="hidden"
-        document.getElementsByClassName("cartaCPUJugada")[0].style.visibility="visible"
-    }
-    else if (manoJugador.mano.length==2){
-        manoJugador.jugarCarta(carta.id);
-        document.getElementsByClassName("cartaJugadorJugada")[1].style.cssText =carta.style.cssText ;
-        document.getElementsByClassName("cartaJugadorJugada")[1].style.visibility="visible"
-        carta.style.display="none"
-        let cartaCPU = cpu.responderCarta(1);
-        document.getElementsByClassName("cartaCPUJugada")[1].style.cssText = document.getElementById(cartaCPU).style.cssText;
-        document.getElementById(cartaCPU).style.visibility="hidden"
-        document.getElementsByClassName("cartaCPUJugada")[1].style.visibility="visible"
     }
     else{
-        manoJugador.jugarCarta(carta.id);
-        document.getElementsByClassName("cartaJugadorJugada")[2].style.cssText =carta.style.cssText ;
-        document.getElementsByClassName("cartaJugadorJugada")[2].style.visibility="visible"
-        carta.style.display="none"
-        let cartaCPU = cpu.responderCarta(2);
-        document.getElementsByClassName("cartaCPUJugada")[2].style.cssText = document.getElementById(cartaCPU).style.cssText;
-        document.getElementById(cartaCPU).style.visibility="hidden"
-        document.getElementsByClassName("cartaCPUJugada")[2].style.visibility="visible"
+       await juego.duelo(manoCPU.manoJugada[2], carta.id)
     }
 }
+
+

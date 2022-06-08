@@ -2,6 +2,9 @@ $colorMesa: #a3c891;
 $colorBordeMesa: grey;
 $colorSombraMesa: lightgrey;
 $colorFondo: rgb(234, 236, 199);
+$fontMensaje: 'Lilita One', cursive;
+
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
 
 @mixin centrarElementoGame {
     display: flex;
@@ -22,9 +25,11 @@ $colorFondo: rgb(234, 236, 199);
     @each $i in $iter {
         @include hoverCarta(#{$i}, -20, ($i) * 15 - 30);
     }
+    background-position-x: -83.3*1 + px;
+    background-position-y:  -127.7*4 + px;
 }
 
-@mixin cartaJugada {
+@mixin cartaPlay {
     height: 128px;
     width: 83px;
     background-image: url('images/baraja.png');
@@ -98,29 +103,51 @@ body{
     @include carta;
     @include transformCarta(1, -15, -20);
     @include transformCarta(3, 15, 20);
-    background-position-x: -83.3*1 + px;
-    background-position-y:  -127.7*4 + px;
 }
 
-.manoJugadorJugada{
+.manoJugadorPlay{
     @include centrarElementoGame;
     top: 410px;
     gap: 10px;
 }
 
-.manoCPUJugada{
+.manoCPUPlay{
     @include centrarElementoGame;
     top: 280px;
     gap: 10px;
 }
 
-.cartaJugadorJugada {
-    @include cartaJugada;
+.cartaJugadorPlay {
+    @include cartaPlay;
 }
-.cartaCPUJugada {
-    @include cartaJugada;
+.cartaCPUPlay {
+    @include cartaPlay;
 }
 
 .iconPlayer{
     width: 150px;
+}
+
+#mensaje{
+    position: absolute;
+    top: 350px;
+    font-size: 50px;
+    font-family: $fontMensaje;
+    visibility: hidden;
+    z-index: 100;
+}
+
+.mensajeAlerta{
+    animation-name: animationAlert;
+    animation-duration: 0.5s;
+}
+
+@mixin transictionAlert{
+    @for $i from 0 to 20 {
+    #{(100% - 5*$i)} {transform: scale(1 + $i*0.1); visibility: visible};
+    }
+}
+
+@keyframes animationAlert {
+    @include transictionAlert;
 }
