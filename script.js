@@ -1,10 +1,66 @@
 class Interfaz {
     constructor() { };
 
-    async mensaje(){
+    deshabilitarTruco(){
+        document.getElementById("buttonTruco").style.backgroundColor="grey";
+        document.getElementById("buttonTruco").removeAttribute("onclick");
+    }
+
+    habilitarTruco(){
+        document.getElementById("buttonTruco").style.backgroundColor="rgb(98, 108, 212)";
+        document.getElementById("buttonTruco").setAttribute("onclick", "cantarTruco();")
+    }
+    async mensaje(mensaje) {
+        document.getElementById("mensaje").innerText = mensaje;
         document.getElementById("mensaje").classList.add("mensajeAlerta");
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 700));
         document.getElementById("mensaje").classList.remove("mensajeAlerta");
+    }
+
+    deshabilitarControl(){
+        for (let carta of document.getElementsByClassName("cartaJugador")) {
+            carta.removeAttribute("onclick");
+        }
+        // document.getElementById("buttonEnvido").removeAttribute("onclick");
+        // document.getElementById("buttonFlor").removeAttribute("onclick");
+        document.getElementById("buttonTruco").removeAttribute("onclick");
+    }
+    
+    habilitarControl(){
+        for (let carta of document.getElementsByClassName("cartaJugador")) {
+            carta.setAttribute("onclick", "lanzarCarta(this);")
+        }
+        document.getElementById("buttonEnvido").setAttribute("onclick", "cantarEnvido();");
+        // document.getElementById("buttonFlor").setAttribute("onclick", "cantarFlor();")
+        if (juego.puntosTruco===1){
+            this.habilitarTruco()
+        }
+    }
+
+    anotarPunto(jugador) {
+        let ultimoPunto = Array.from(document.getElementsByClassName("punto" + jugador)).pop();
+        if (ultimoPunto.style.borderLeft === "") {
+            ultimoPunto.style.borderLeft = "3px solid #000";
+        }
+        else if (ultimoPunto.style.borderTop === "") {
+            ultimoPunto.style.borderTop = "3px solid #000";
+        }
+        else if (ultimoPunto.style.borderRight === "") {
+            ultimoPunto.style.borderRight = "3px solid #000";
+        }
+        else if (ultimoPunto.style.borderBottom === "") {
+            ultimoPunto.style.borderBottom = "3px solid #000";
+        }
+        else if (!ultimoPunto.classList.contains("puntoFinal")) {
+            ultimoPunto.classList.add("puntoFinal");
+        }
+        else {
+            let punto = document.createElement("li");
+            punto.classList.add("punto" + jugador);
+            document.getElementById("partida" + jugador).appendChild(punto);
+            ultimoPunto = Array.from(document.getElementsByClassName("punto" + jugador)).pop();
+            ultimoPunto.style.borderLeft = "3px solid #000";
+        }
     }
 
     reset() {
@@ -13,31 +69,31 @@ class Interfaz {
         manoCPU = new Mano();
 
         for (let carta of document.getElementsByClassName("cartaJugadorPlay")) {
-            carta.style.visibility="hidden";
+            carta.style.visibility = "hidden";
         }
 
         for (let carta of document.getElementsByClassName("cartaCPUPlay")) {
-            carta.style.visibility="hidden";
+            carta.style.visibility = "hidden";
         }
 
         for (let carta of document.getElementsByClassName("cartaJugador")) {
-            carta.style.visibility="visible";
+            carta.style.visibility = "visible";
             carta.removeAttribute("id");
         }
 
         for (let carta of document.getElementsByClassName("cartaCPU")) {
-            carta.style.visibility="visible";
-            carta.style.backgroundPositionX= "-83.3px";
-            carta.style.backgroundPositionY ="-510.8px";
+            carta.style.visibility = "visible";
+            carta.style.backgroundPositionX = "-83.3px";
+            carta.style.backgroundPositionY = "-510.8px";
         }
-
-
-
 
         this.cargarMano(manoJugador.mano, manoCPU.mano);
         for (let i = 0; i < 3; i++) {
             this.cargarCarta(manoJugador.mano[i]);
         }
+        document.getElementById("buttonEnvido").innerText = "ENVIDO ("+juego.calcularEnvido(manoJugador.mano)+")";
+
+        iniciarPartida(juego.turno);
     }
 
     cargarMano(manoJugador, manoCPU) {
@@ -139,6 +195,9 @@ class Mano {
 
 class Juego {
     constructor() {
+        this.puntosTruco = 1;
+        this.turno = this.jugadorInicia();
+        this.partidaGral = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
         this.partida = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
         this.jerarquia =
             [
@@ -159,6 +218,26 @@ class Juego {
             ];
     }
 
+    jugadorGanando(jugador) {
+        let puntoCPU = this.partidaGral.filter(e => e.Jugador === "CPU")[0].Puntos;
+        let puntoJugador = this.partidaGral.filter(e => e.Jugador === "Jugador")[0].Puntos;
+        let g;
+        if (puntoCPU > puntoJugador) {
+            g = "CPU";
+        }
+        else {
+            g = "Jugador";
+        }
+        return jugador === g;
+    }
+
+
+
+    anotarPunto(jugador) {
+        this.partidaGral.filter(e => e.Jugador === jugador)[0].Puntos++;
+        interfaz.anotarPunto(jugador);
+    }
+
     jerarquiaCarta(carta) {
         return this.jerarquia.filter(e => e.Num + " de " + e.Palo === carta)[0].Posc;
     }
@@ -176,10 +255,23 @@ class Juego {
         }
         if (this.partida.filter(e => e.Jugador === "Jugador")[0].Puntos == 2 ||
             this.partida.filter(e => e.Jugador === "CPU")[0].Puntos == 2) {
+            if (this.partida.filter(e => e.Jugador === "Jugador")[0].Puntos == 2) {
+                for (let i = 0; i < this.puntosTruco; i++) {
+                    this.anotarPunto("Jugador");
+                    this.turno = "Jugador";
+                }
+            }
+            else {
+                for (let i = 0; i < this.puntosTruco; i++) {
+                    this.anotarPunto("CPU");
+                    this.turno = "CPU";
+                }
+            }
             await new Promise(r => setTimeout(r, 2000));
             interfaz.reset();
-            this.partida[0].Puntos=0;
-            this.partida[1].Puntos=0;
+            this.partida[0].Puntos = 0;
+            this.partida[1].Puntos = 0;
+            this.puntosTruco=1;
             fin = true;
         }
         return { fin, ganador };
@@ -195,34 +287,34 @@ class Juego {
     }
 
     //***CALCULO DE ENVIDO Y FLOR EN PRUEBA***
-    /*
+
     calcularEnvido(mano) {
         let cartasEnvido = [];
         let envido = 0;
         for (let i = 0; i < 3; i++) {
-            cartasEnvido.push(juego.jerarquia.filter(e => e[0] + " de " + e[1] === mano.mano[i]));
+            cartasEnvido.push(this.jerarquia.filter(e => e.Num + " de " + e.Palo === mano[i]));
         }
         for (let j = 0; j < 3; j++) {
             for (let k = j + 1; k < 3; k++) {
-                if (cartasEnvido[j][0][0] < 10 && cartasEnvido[k][0][0] < 10 && cartasEnvido[j][0][1] == cartasEnvido[k][0][1]) {
-                    envido = 20 + cartasEnvido[j][0][0] + cartasEnvido[k][0][0];
+                if (cartasEnvido[j][0].Num < 10 && cartasEnvido[k][0].Num < 10 && cartasEnvido[j][0].Palo == cartasEnvido[k][0].Palo) {
+                    envido = 20 + cartasEnvido[j][0].Num + cartasEnvido[k][0].Num;
                     break
                 }
-                else if ((Math.min(cartasEnvido[j][0][0], cartasEnvido[k][0][0]) < 10) && cartasEnvido[j][0][1] == cartasEnvido[k][0][1]) {
-                    envido = 20 + Math.min(cartasEnvido[j][0][0], cartasEnvido[k][0][0]);
+                else if ((Math.min(cartasEnvido[j][0].Num, cartasEnvido[k][0].Num) < 10) && cartasEnvido[j][0].Palo== cartasEnvido[k][0].Palo) {
+                    envido = 20 + Math.min(cartasEnvido[j][0].Num, cartasEnvido[k][0].Num);
                     break;
                 }
-                else if ((Math.min(cartasEnvido[j][0][0], cartasEnvido[k][0][0]) >= 10) && cartasEnvido[j][0][1] == cartasEnvido[k][0][1]) {
+                else if ((Math.min(cartasEnvido[j][0].Num, cartasEnvido[k][0].Num) >= 10) && cartasEnvido[j][0].Palo == cartasEnvido[k][0].Palo) {
                     envido = 20;
                     break;
                 }
             }
-            if (envido < cartasEnvido[j][0][0] && cartasEnvido[j][0][0] < 10)
-                envido = cartasEnvido[j][0][0];
+            if (envido < cartasEnvido[j][0].Num && cartasEnvido[j][0].Num < 10)
+                envido = cartasEnvido[j][0].Num;
         }
         return envido;
     }
-
+    /*
     calcularFlor(mano) {
         let cartasFlor = [];
         let flor = 0;
@@ -249,7 +341,25 @@ class Juego {
 class CPU {
     constructor() { }
 
-     async responderCarta(cartaJugador) {
+    async respuestaTruco() {
+        await new Promise(r => setTimeout(r, 2000));
+        let jerarquia = 0;
+        let res = "NO QUIERO";
+        if (manoCPU.mano.length > 0) {
+            for (let carta of manoCPU.mano) {
+                jerarquia += juego.jerarquiaCarta(carta);
+            }
+            if (jerarquia / manoCPU.mano.length <= 8) {
+                res = "QUIERO";
+            }
+        }
+        else if (juego.jerarquiaCarta(manoCPU.manoJugada[2]) <= 8) {
+            res = "QUIERO";
+        }
+        return res;
+    }
+
+    async responderCarta(cartaJugador) {
         await new Promise(r => setTimeout(r, 2000));
 
         let numCartas = manoCPU.mano.length;
@@ -274,7 +384,8 @@ class CPU {
         return cartaCPU;
     }
 
-    jugarCarta() {
+    async jugarCarta() {
+        await new Promise(r => setTimeout(r, 2000));
         let cartaCPU = manoCPU.mano.pop();
         interfaz.cargarCarta(cartaCPU);
         manoCPU.jugarCarta(cartaCPU, "cartaCPUPlay");
@@ -282,43 +393,81 @@ class CPU {
 
 }
 
-const juego = new Juego();
-let barajaJuego = new Baraja();
-let manoJugador = new Mano();
-let manoCPU = new Mano();
-const interfaz = new Interfaz();
-interfaz.reset();
-const cpu = new CPU();
-
 async function lanzarCarta(carta) {
+    interfaz.deshabilitarControl();
     manoJugador.jugarCarta(carta.id, "cartaJugadorPlay");
     if (manoCPU.mano.length > 0) {
         if (manoCPU.manoJugada.length < manoJugador.manoJugada.length) {
             let res = await juego.duelo(await cpu.responderCarta(carta.id), carta.id);
             if (res.ganador === "CPU" && !res.fin) {
                 if (manoCPU.mano.length > 0) {
-                    cpu.jugarCarta();                
+                    await cpu.jugarCarta();
                 }
             }
-            if (!res.fin){
-            await new Promise(r => setTimeout(r, 1000));
-            await interfaz.mensaje();
+            if (!res.fin) {
+                await new Promise(r => setTimeout(r, 1000));
+                await interfaz.mensaje("TE TOCA");
             }
         }
         else if (manoCPU.manoJugada.length === manoJugador.manoJugada.length) {
             let res = await juego.duelo(manoCPU.manoJugada[manoCPU.manoJugada.length - 1], manoJugador.manoJugada[manoJugador.manoJugada.length - 1]);
-            if (!res.fin){
+            if (!res.fin) {
                 if (res.ganador == "CPU") {
-                    cpu.jugarCarta();       
-                }           
+                    await cpu.jugarCarta();
+                }
                 await new Promise(r => setTimeout(r, 1000));
-                await interfaz.mensaje();
+                await interfaz.mensaje("TE TOCA");
             }
         }
     }
-    else{
-       await juego.duelo(manoCPU.manoJugada[2], carta.id)
+    else {
+        await juego.duelo(manoCPU.manoJugada[2], carta.id)
+    }
+
+    interfaz.habilitarControl();
+}
+
+async function cantarTruco() {
+    interfaz.deshabilitarTruco();
+    await interfaz.mensaje("TRUCO");
+    let respuesta = await cpu.respuestaTruco();
+    await interfaz.mensaje(respuesta);
+    if (respuesta === "NO QUIERO") {
+        juego.anotarPunto("Jugador");
+        juego.turno = "Jugador";
+        interfaz.reset();
+        juego.partida[0].Puntos = 0;
+        juego.partida[1].Puntos = 0;
+        juego.puntosTruco=1;
+    }
+    else {
+        juego.puntosTruco++;
     }
 }
 
+async function cantarFlor() {
+    await interfaz.mensaje("FLOR");
+}
+
+async function cantarEnvido() {
+    await interfaz.mensaje("ENVIDO");
+}
+
+async function iniciarPartida(jugador) {
+    interfaz.deshabilitarControl();
+    if (jugador === "CPU") {
+        await cpu.jugarCarta();
+    }
+    await new Promise(r => setTimeout(r, 1000));
+    interfaz.habilitarControl();
+    await interfaz.mensaje("TE TOCA");
+}
+
+const juego = new Juego();
+let barajaJuego = new Baraja();
+let manoJugador = new Mano();
+let manoCPU = new Mano();
+const interfaz = new Interfaz();
+const cpu = new CPU();
+interfaz.reset();
 

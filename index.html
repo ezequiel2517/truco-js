@@ -35,7 +35,33 @@
             <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
             <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
         </div>
+        <div class="tablero">
+            <button id="buttonEnvido">ENVIDO</button>
+            <button id="buttonFlor">FLOR</button>
+            <button id="buttonTruco"onclick="cantarTruco()">TRUCO</button>
+        </div>
     </div>
+    <div class="contador">
+        <table id="tableContador">
+            <tr>
+                <th>JUGADOR</th>
+                <th>CPU</th>
+            </tr>
+            <tr>
+                <td>
+                    <ul id="partidaJugador">
+                        <li class="puntoJugador"></li>
+                    </ul>
+                </td>
+                <td>
+                    <ul id="partidaCPU">
+                        <li class="puntoCPU"></li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <script src="script.js"></script>
 </body>
 

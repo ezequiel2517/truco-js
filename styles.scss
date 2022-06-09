@@ -2,9 +2,13 @@ $colorMesa: #a3c891;
 $colorBordeMesa: grey;
 $colorSombraMesa: lightgrey;
 $colorFondo: rgb(234, 236, 199);
+$colorContador: rgb(185, 74, 74);
 $fontMensaje: 'Lilita One', cursive;
+$fontContador: 'Jua', sans-serif;
 
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
 
 @mixin centrarElementoGame {
     display: flex;
@@ -70,20 +74,21 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 20px;
 }
 
 .mesa{
     background-color: $colorMesa;    
     border: 15px solid $colorBordeMesa;
     border-radius: 50%;
-    width: 550px;
-    height: 500px;
+    width: 500px;
+    height: 450px;
     box-shadow: 7px 7px $colorSombraMesa
 }
 
 .manoJugador{
     @include centrarElementoGame;
-    top: 560px;
+    top: 530px;
 }
 
 .manoCPU{
@@ -97,6 +102,7 @@ body{
     @include carta;
     @include transformCarta(1, -15, -20);
     @include transformCarta(3, 15, 20);
+    cursor: pointer;
 }
 
 .cartaCPU {
@@ -130,24 +136,89 @@ body{
 
 #mensaje{
     position: absolute;
-    top: 350px;
-    font-size: 50px;
+    top: 360px;
+    font-size: 30px;
     font-family: $fontMensaje;
     visibility: hidden;
     z-index: 100;
+    color: red;
+    text-shadow: 2px 2px black;
 }
 
 .mensajeAlerta{
     animation-name: animationAlert;
-    animation-duration: 0.5s;
-}
-
-@mixin transictionAlert{
-    @for $i from 0 to 20 {
-    #{(100% - 5*$i)} {transform: scale(1 + $i*0.1); visibility: visible};
-    }
+    animation-duration: 10s;
 }
 
 @keyframes animationAlert {
-    @include transictionAlert;
+    @for $i from 0 to 20 {
+        #{(100% - 5*$i)} {transform: scale(1 + $i*0.1); visibility: visible};
+        }
+}
+
+.tablero{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-top: 50px;
+    button{
+        width: 100px;
+        height: 30px;
+        border-radius: 15px;
+        font-size: 15px;
+        border: 0px;
+        color: white;
+        box-shadow: 3px 3px black;
+    }
+    #buttonFlor{
+        background-color: rgb(228, 97, 97);
+    }
+    #buttonEnvido{
+        background-color: rgb(104, 174, 101);
+    }
+    #buttonTruco{
+        background-color: rgb(98, 108, 212);
+    }
+}
+
+
+
+.contador{
+    position: absolute;
+    top: 35px;
+    right: 350px;
+    border: 2px solid $colorContador;
+    border-radius: 10px;
+    background-color: $colorContador;
+    box-shadow: 3px 3px black;
+    table{
+        th{
+            font-size: 20px;
+            border: 10px solid $colorContador;
+            border-collapse: collapse;
+            font-family: $fontContador;
+            text-align: center;
+        }
+        tr{
+            vertical-align: top;
+        }
+    }
+}
+
+.puntoJugador, .puntoCPU {
+    width: 25px;
+    height: 25px;
+    margin: auto;
+}
+
+.puntoFinal {
+background: linear-gradient(135deg, transparent calc(50% - 2px), rgb(0, 0, 0) 50%, transparent calc(50% + 2px) );
+}
+
+ul{
+    list-style: none;
+    li{
+        margin-bottom: 5px !important;
+    }
 }
