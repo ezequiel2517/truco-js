@@ -255,29 +255,43 @@ body {
     visibility: visible;
   }
 }
-.tablero {
+#tablero {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   gap: 5px;
   margin-top: 50px;
 }
-.tablero button {
+#tablero button {
   width: 100px;
   height: 30px;
   border-radius: 15px;
   font-size: 15px;
   border: 0px;
-  color: white;
+  color: rgb(255, 255, 255);
   box-shadow: 3px 3px black;
+  background-color: rgb(98, 108, 212);
 }
-.tablero #buttonFlor {
-  background-color: rgb(228, 97, 97);
+
+#tableroRespuesta {
+  position: absolute;
+  top: 400px;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-top: 50px;
+  visibility: hidden;
 }
-.tablero #buttonEnvido {
-  background-color: rgb(104, 174, 101);
-}
-.tablero #buttonTruco {
+#tableroRespuesta button {
+  width: 100px;
+  height: 30px;
+  border-radius: 15px;
+  font-size: 15px;
+  border: 0px;
+  color: rgb(255, 255, 255);
+  box-shadow: 3px 3px black;
   background-color: rgb(98, 108, 212);
 }
 
