@@ -9,9 +9,11 @@ class Interfaz {
     }
 
     //Habilitar botón de canto
-    habilitarButton(opcion) {
-        document.getElementById("button" + opcion).style.backgroundColor = "rgb(98, 108, 212)";
-        document.getElementById("button" + opcion).setAttribute("onclick", "cantar" + opcion + "(this)")
+    habilitarButton(opcion, texto) {
+        let button = document.getElementById("button" + opcion);
+        button.style.backgroundColor = "rgb(98, 108, 212)";
+        button.innerText = texto;
+        button.setAttribute("onclick", "cantar" + opcion + "(this)");
     }
 
     //Habilitar tablero de cantos de respuesta
@@ -22,21 +24,11 @@ class Interfaz {
         }
         document.getElementById("buttonRespuesta").innerHTML = respuesta;
         document.getElementById("tableroRespuesta").style.visibility = "visible";
-        //Deshabilitar tablero de cantos
-        const opciones = ["Truco", "Envido", "Flor"];
-        for (let canto of opciones) {
-            this.deshabilitarButton(canto);
-        }
     }
 
     //Habilitar tablero de cantos de respuesta
     deshabilitarRespuesta() {
         document.getElementById("tableroRespuesta").style.visibility = "hidden";
-        //Habilitar tablero de cantos
-        const opciones = ["Truco", "Envido", "Flor"];
-        for (let canto of opciones) {
-            this.habilitarButton(canto);
-        }
     }
 
     //Mostrar mensaje
@@ -48,29 +40,35 @@ class Interfaz {
         document.getElementById("mensaje").classList.remove("mensajeAlerta");
     }
 
-    //Deshabilitar click en cartas y cantos
-    deshabilitarControl() {
+    //Deshabilitar click en cartas
+    deshabilitarCartas() {
         //Deshabilitar click en cartas
         for (let carta of document.getElementsByClassName("cartaJugador")) {
             carta.removeAttribute("onclick");
         }
-        //Deshabilitar tablero de cantos
+    }
+
+    //Deshabilitar tablero de cantos
+    deshabilitarTablero() {
         const opciones = ["Truco", "Envido", "Flor"];
         for (let canto of opciones) {
             this.deshabilitarButton(canto);
         }
     }
 
+
     //Habilitar click en cartas y cantos
-    habilitarControl() {
+    habilitarCartas() {
         for (let carta of document.getElementsByClassName("cartaJugador")) {
             carta.setAttribute("onclick", "lanzarCarta(this);")
         }
-        //Habilitar tablero de cantos
-        const opciones = ["Truco", "Envido", "Flor"];
-        for (let canto of opciones) {
-            this.habilitarButton(canto);
-        }
+    }
+
+    //Habilitar tablero de cantos
+    habilitarTablero() {
+        this.habilitarButton("Envido", "ENVIDO (" + manoJugador.getEnvido() + ")");
+        this.habilitarButton("Flor", "FLOR");
+        this.habilitarButton("Truco", manoJugador.getCantoTruco());
     }
 
     //Anotar punto en tablero
@@ -182,6 +180,10 @@ class Interfaz {
         document.getElementsByClassName(cartaJugador)[posicionCarta].style.cssText = document.getElementById(carta).style.cssText;
         document.getElementsByClassName(cartaJugador)[posicionCarta].style.visibility = "visible";
     }
+
+    getRespuesta() {
+        return document.getElementById("buttonRespuesta").innerText;
+    }
 }
 
 //Clase encargada de llevar las cartas del juego
@@ -228,6 +230,34 @@ class Mano {
         this.tomarMano();
         this.manoJugada = [];
         this.envido = juego.calcularEnvido(this.mano);
+        this.cantoTruco = "TRUCO";
+    }
+
+    //Get del canto disponible para truco
+    getCantoTruco() {
+        return this.cantoTruco;
+    }
+
+    //Deshabilitar truco
+    disableCantoTruco() {
+        this.cantoTruco = "";
+    }
+
+    //Una vez que se canta truco -> siguiente canto disponible
+    moverTruco(truco) {
+        switch (truco) {
+            case "TRUCO":
+                this.cantoTruco = "RETRUCO";
+                break;
+            case "RETRUCO":
+                this.cantoTruco = "VALE 4";
+                break;
+            case "VALE 4":
+                this.cantoTruco = "";
+                break;
+            default:
+                break;
+        }
     }
 
     //Get  del número de cartas jugadas
@@ -278,6 +308,7 @@ class Mano {
 class Juego {
     constructor() {
         this.puntosTruco = 1;
+        this.turnoTruco = "";
         this.turno = this.jugadorInicia();
         this.partidaGral = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
         this.partida = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
@@ -306,6 +337,7 @@ class Juego {
         manoJugador = new Mano("Jugador");
         manoCPU = new Mano("CPU");
         interfaz.reset();
+        cpu.reset();
         this.partida[0].Puntos = 0;
         this.partida[1].Puntos = 0;
         this.puntosTruco = 1;
@@ -314,7 +346,7 @@ class Juego {
     }
 
     //Setear puntos del truco
-    puntosTruco(puntos) {
+    setPuntosTruco(puntos) {
         this.puntosTruco = puntos;
     }
 
@@ -325,6 +357,26 @@ class Juego {
         }
         else {
             this.turno = "CPU";
+        }
+    }
+
+    //Get jugador que lleva el canto del truco
+    getTurnoCanto() {
+        return this.turnoTruco;
+    }
+
+    //Get jugador que lleva el canto del truco
+    setTurnoCanto(jugador) {
+        return this.turnoTruco = jugador;
+    }
+
+    //Cambiar jugador que lleva la prioridad para cantar truco
+    moverCantoTruco() {
+        if (this.turnoTruco === "Jugador") {
+            this.turnoTruco = "CPU";
+        }
+        else {
+            this.turnoTruco = "Jugador";
         }
     }
 
@@ -345,17 +397,20 @@ class Juego {
 
     //Iniciar partida
     async iniciarPartida() {
-        interfaz.deshabilitarControl();
+        interfaz.deshabilitarCartas();
+        interfaz.deshabilitarTablero();
         if (this.turno === "CPU") {
             await cpu.jugarCarta();
             juego.pasarTurno()
         }
         await interfaz.mensaje("TE TOCA");
-        interfaz.habilitarControl();
+        interfaz.habilitarCartas();
+        interfaz.habilitarTablero(manoJugador.getEnvido(), 0, "TRUCO");
     }
 
     //Anotar punto a jugador
     anotarPunto(jugador, puntos) {
+        console.log(puntos)
         this.partidaGral.filter(e => e.Jugador === jugador)[0].Puntos += puntos;
         for (let i = 0; i < puntos; i++) {
             interfaz.anotarPunto(jugador);
@@ -448,7 +503,10 @@ class Juego {
 }
 
 class CPU {
-    constructor() { this.respuesta = false }
+    constructor() {
+        this.respuesta = false
+        this.trucoDisponible = null;
+    }
 
     //Esperar hasta que el usuario haga click
     async esperar() {
@@ -456,10 +514,24 @@ class CPU {
             const interval = setInterval(() => {
                 let condition = this.respuesta;
                 if (condition) {
+                    resolve();
                     clearInterval(interval);
                 };
-            }, 1000);
+            }, 500);
         });
+    }
+
+    //Reset CPU
+    reset() {
+        this.respuesta = null;
+        this.trucoDisponible = null;
+    }
+
+    //Setear espera que se usa en function esperar()
+    async setRespuesta() {
+        this.respuesta = true;
+        await new Promise(r => setTimeout(r, 600));
+        this.respuesta = false;
     }
 
     //Evaluar/Cantar Envido
@@ -473,42 +545,40 @@ class CPU {
     }
 
     //Evaluar/Cantar Truco
-    async cantarTruco(canto) {
+    async cantarTruco() {
         let jerarquia = 0;
         let res = "NO QUIERO";
         for (let carta of manoCPU.mostrarMano()) {
             jerarquia += juego.jerarquiaCarta(carta);
         }
+        let subir = false;
+        if (Math.floor(Math.random() * 3) >= 2) {
+            subir = true;
+        }
         let jerarquiaMano = jerarquia / (3 - manoCPU.cartasJugadas());
-        if (juego.getTurno() !== "Jugador" && jerarquiaMano <= 10) {
-            switch (canto) {
-                case "TRUCO":
-                    await new Promise(r => setTimeout(r, 2000));
-                    if (juego.getTurno() === "CPU" && jerarquiaMano <= 8) {
-                        res = "RETRUCO";
-                    }
-                    else {
-                        res = "QUIERO";
-                    }
-                    break;
-                case "RETRUCO":
-                    await new Promise(r => setTimeout(r, 2000));
-                    if (juego.getTurno() === "CPU" && jerarquiaMano <= 6) {
-                        res = "VALE 4";
-                    }
-                    else {
-                        res = "QUIERO";
-                    }
-                    break;
-                case "VALE 4":
-                    await new Promise(r => setTimeout(r, 2000));
-                    if (juego.getTurno() === "CPU" && jerarquiaMano <= 4) {
-                        res = "QUIERO";
-                    }
-                    else {
-                        res = "NO QUIERO";
-                    }
-                    break;
+        let miTurno = juego.getTurnoCanto();
+        if ((miTurno === "CPU" || miTurno === "") && manoCPU.getCantoTruco() !== "" && jerarquiaMano <= 10) {
+            if (subir) {
+                await new Promise(r => setTimeout(r, 2000));
+                manoJugador.moverTruco(manoCPU.getCantoTruco());
+                res = manoCPU.getCantoTruco();
+                juego.moverCantoTruco();
+            }
+            else {
+                switch (manoJugador.getCantoTruco()) {
+                    case "TRUCO":
+                        juego.setPuntosTruco(2);
+                        break;
+                    case "RETRUCO":
+                        juego.setPuntosTruco(3);
+                        break;
+                    case "VALE 4":
+                        juego.setPuntosTruco(4);
+                        break;
+                    default:
+                        break;
+                }
+                res = "QUIERO";
             }
         }
         return res;
@@ -516,6 +586,14 @@ class CPU {
 
     //Responder según carta del oponente
     async responderCarta(cartaJugador) {
+        let cantoTruco = await this.cantarTruco();
+        if (cantoTruco.search("QUIERO") === -1) {
+            await interfaz.mensaje(cantoTruco);
+            manoJugador.moverTruco(cantoTruco);
+            interfaz.habilitarRespuesta(manoJugador.getCantoTruco());
+            juego.pasarTurno();
+            await this.esperar();
+        }
         let numCartas = 3 - manoCPU.cartasJugadas();
         let ganaCPU = false;
         let cartaCPU;
@@ -538,8 +616,16 @@ class CPU {
         return cartaCPU;
     }
 
-    //Jugar carta aleatorioa
+    //Jugar carta aleatoria
     async jugarCarta() {
+        let cantoTruco = await this.cantarTruco();
+        if (cantoTruco.search("QUIERO") === -1) {
+            await interfaz.mensaje(cantoTruco);
+            manoCPU.moverTruco();
+            interfaz.habilitarRespuesta(manoJugador.getCantoTruco());
+            juego.pasarTurno();
+            await this.esperar();
+        }
         await new Promise(r => setTimeout(r, 2000));
         let cartaCPU = manoCPU.randomCarta();
         interfaz.cargarCarta(cartaCPU);
@@ -550,7 +636,7 @@ class CPU {
 
 //Lanzar carta al hacer click en button
 async function lanzarCarta(carta) {
-    interfaz.deshabilitarControl();
+    interfaz.deshabilitarCartas();
     manoJugador.jugarCarta(carta.id, "Jugador");
     juego.pasarTurno();
     if (manoCPU.cartasJugadas() !== 3) {
@@ -582,26 +668,56 @@ async function lanzarCarta(carta) {
     else {
         await juego.duelo(manoCPU.getUltimaCartaJugada(), carta.id)
     }
-    interfaz.habilitarControl();
+    interfaz.habilitarCartas();
 }
 
 async function cantarTruco(truco) {
-    interfaz.deshabilitarControl();
-    await interfaz.mensaje(truco.innerText);
-    juego.pasarTurno();
-    let respuesta = await cpu.cantarTruco(truco.innerText);
-    await interfaz.mensaje(respuesta);
-    switch (respuesta) {
+    let canto = truco.innerHTML;
+    await interfaz.mensaje(canto);
+    interfaz.deshabilitarRespuesta();
+    interfaz.deshabilitarCartas();
+    interfaz.deshabilitarTablero();
+    manoCPU.moverTruco(canto);
+    let puntos = 0;
+    switch (truco.innerText) {
+        case "TRUCO":
+            juego.setTurnoCanto("Jugador");
+            puntos = 1;
+            break;
         case "RETRUCO":
-            interfaz.habilitarRespuesta("VALE 4");
+            puntos = 2;
             break;
         case "VALE 4":
-            interfaz.habilitarRespuesta("");
+            puntos = 3;
             break;
-        case "NO QUIERO":
-            juego.anotarPunto("Jugador", 1);
+        default:
             break;
     }
+    juego.pasarTurno();
+    juego.moverCantoTruco();
+    let respuesta = await cpu.cantarTruco();
+    juego.pasarTurno();
+    await interfaz.mensaje(respuesta);
+    switch (respuesta) {
+        case "QUIERO":
+            juego.setPuntosTruco(puntos + 1);
+            break;
+        case "NO QUIERO":
+            juego.anotarPunto("Jugador", puntos);
+            juego.reset();
+            break;
+        default:
+            manoJugador.moverTruco(respuesta);
+            interfaz.habilitarRespuesta(manoJugador.getCantoTruco());
+            if (manoJugador.getCantoTruco() !== "") {
+                interfaz.habilitarButton("Truco", manoJugador.getCantoTruco());
+            }
+            else {
+                interfaz.deshabilitarButton("Truco");
+            }
+            break;
+    }
+    interfaz.habilitarCartas();
 }
 
 async function cantarEnvido() {
@@ -634,24 +750,23 @@ async function cantarFlor() {
     manoJugador.flor = 1;
 }
 
-async function cantoRespuesta(canto) {
-    await interfaz.mensaje(canto.innerText);
-    if (canto.innerText === "VALE 4") {
-        let respuesta = await cpu.cantarTruco(canto.innerText);
-        await interfaz.mensaje(respuesta);
-        if (respuesta === "NO QUIERO") {
-            juego.anotarPunto("Jugador", 3)
-            juego.reset();
-        }
-        else{
-            juego.puntosTruco(4);
-        }
+async function quiero() {
+    switch (manoCPU.getCantoTruco()) {
+        case "TRUCO":
+            juego.setPuntosTruco(2);
+            break;
+        case "RETRUCO":
+            juego.setPuntosTruco(3);
+            break;
+        case "VALE 4":
+            juego.setPuntosTruco(4);
+            break;
+        default:
+            break;
     }
+    interfaz.habilitarButton("Truco", manoJugador.getCantoTruco());
     interfaz.deshabilitarRespuesta();
-}
-
-function quiero() {
-    cpu.respuesta = true;
+    await cpu.setRespuesta();
 }
 
 const juego = new Juego();
@@ -661,4 +776,3 @@ let manoJugador = new Mano("Jugador");
 let manoCPU = new Mano("CPU");
 const cpu = new CPU();
 juego.reset(juego.jugadorInicia());
-interfaz.deshabilitarControl();
