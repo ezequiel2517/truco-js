@@ -22,7 +22,7 @@ class Interfaz {
 
     //Habilitar tablero de cantos de respuesta
     habilitarRespuesta(opcion, respuesta) {
-        if(opcion==="Envido")
+        if (opcion === "Envido")
             interfaz.deshabilitarRespuesta("Envido");
         let opcionTablero = document.querySelector(`#${opcion}`);
         let noQuiero = document.createElement("button");
@@ -99,8 +99,18 @@ class Interfaz {
 
     //Habilitar tablero de cantos
     habilitarTablero() {
-        if (manoJugador.cartasJugadas() === 0 && juego.getPuntosTruco() === 1 && !juego.getCantoEnvido())
+        if (manoJugador.cartasJugadas() === 0 && juego.getPuntosTruco() === 1 && !juego.getCantoEnvido()) {
             this.habilitarButton("Envido", "ENVIDO (" + manoJugador.getEnvido() + ")");
+            let opcionTablero = document.querySelector("#Envido");
+            let b = document.createElement("button");
+            b.innerHTML = "REAL ENVIDO";
+            b.setAttribute("onclick", "cantarEnvido(this);");
+            opcionTablero.prepend(b);
+            b = document.createElement("button");
+            b.innerHTML = "FALTA ENVIDO";
+            b.setAttribute("onclick", "cantarEnvido(this);");
+            opcionTablero.prepend(b);
+        }
         if (manoJugador.flor !== 0 && !juego.getFlor())
             this.habilitarButton("Flor", "FLOR (" + juego.calcularFlor(manoJugador.mostrarMano()) + ")");
         if ((juego.getTurnoCanto() === "Jugador" || juego.getTurnoCanto() === "") && manoJugador.getCantoTruco() !== "")
@@ -403,7 +413,7 @@ class Juego {
         this.cantoEnvido = true;
     }
 
-    getCantoEnvido(){
+    getCantoEnvido() {
         return this.cantoEnvido;
     }
 
@@ -738,6 +748,7 @@ class CPU {
                     default:
                         break;
                 }
+                juego.setCantoEnvido();
             }
             else {
                 switch (canto) {
@@ -756,8 +767,7 @@ class CPU {
                     default:
                         break;
                 }
-            }       
-            juego.setCantoEnvido();
+            }
         }
         juego.setEnvido(res);
         return res;
