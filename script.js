@@ -4,31 +4,64 @@ class Interfaz {
 
     //Desabilitar botón de canto
     deshabilitarButton(opcion) {
-        document.getElementById("button" + opcion).style.backgroundColor = "grey";
-        document.getElementById("button" + opcion).removeAttribute("onclick");
+        let button = document.querySelector(`#${opcion}`).lastElementChild;
+        button.style.backgroundColor = "gray";
+        button.style.cursor = "default";
+        button.removeAttribute("onclick");
     }
 
     //Habilitar botón de canto
     habilitarButton(opcion, texto) {
-        let button = document.getElementById("button" + opcion);
+        let button = document.querySelector(`#${opcion}`).lastElementChild;
         button.style.backgroundColor = "rgb(98, 108, 212)";
         button.innerText = texto;
+        button.style.cursor = "pointer";
         button.setAttribute("onclick", "cantar" + opcion + "(this)");
+
     }
 
     //Habilitar tablero de cantos de respuesta
-    habilitarRespuesta(respuesta) {
-        //Si no hay respuesta -> Solo mostrar: Quiero - No Quiero
-        if (respuesta === "") {
-            document.getElementById("buttonRespuesta").style.display = "none"
+    habilitarRespuesta(opcion, respuesta) {
+        if(opcion==="Envido")
+            interfaz.deshabilitarRespuesta("Envido");
+        let opcionTablero = document.querySelector(`#${opcion}`);
+        let noQuiero = document.createElement("button");
+        noQuiero.innerHTML = "NO QUIERO";
+        noQuiero.setAttribute("onclick", "noQuiero(this);")
+        opcionTablero.prepend(noQuiero);
+
+        let quiero = document.createElement("button");
+        quiero.innerHTML = "QUIERO";
+        quiero.setAttribute("onclick", "quiero(this);");
+        opcionTablero.prepend(quiero);
+        if (opcion === "Truco" && respuesta !== "") {
+            let buttonRespuesta = document.createElement("button");
+            buttonRespuesta.innerHTML = respuesta;
+            buttonRespuesta.setAttribute("onclick", `cantar${opcion}(this);`);
+            opcionTablero.prepend(buttonRespuesta);
         }
-        document.getElementById("buttonRespuesta").innerHTML = respuesta;
-        document.getElementById("tableroRespuesta").style.visibility = "visible";
+        else if (opcion === "Envido" && respuesta !== "") {
+            let ordenEnvido = ["ENVIDO", "ENVIDO", "REAL ENVIDO", "FALTA ENVIDO"];
+            if (juego.getEnvidoRepetido())
+                ordenEnvido.shift();
+            let comienzo = ordenEnvido.indexOf(respuesta);
+            for (let i = comienzo + 1; i < ordenEnvido.length; i++) {
+                let buttonRespuesta = document.createElement("button");
+                buttonRespuesta.innerHTML = ordenEnvido[i];
+                buttonRespuesta.setAttribute("onclick", `cantar${opcion}(this);`);
+                opcionTablero.prepend(buttonRespuesta);
+            }
+        }
+        this.deshabilitarButton(`${opcion}`);
     }
 
     //Habilitar tablero de cantos de respuesta
-    deshabilitarRespuesta() {
-        document.getElementById("tableroRespuesta").style.visibility = "hidden";
+    deshabilitarRespuesta(opcion) {
+        let tablero = document.querySelector(`#${opcion}`);
+        while (tablero.childElementCount > 1) {
+            tablero.removeChild(tablero.lastChild);
+        }
+        this.deshabilitarButton(`${opcion}`);
     }
 
     //Mostrar mensaje
@@ -36,7 +69,7 @@ class Interfaz {
         document.getElementById("mensaje").innerText = mensaje;
         //Mostrar animación de mensaje
         document.getElementById("mensaje").classList.add("mensajeAlerta");
-        await new Promise(r => setTimeout(r, 700));
+        await new Promise(r => setTimeout(r, 500));
         document.getElementById("mensaje").classList.remove("mensajeAlerta");
     }
 
@@ -52,7 +85,7 @@ class Interfaz {
     deshabilitarTablero() {
         const opciones = ["Truco", "Envido", "Flor"];
         for (let canto of opciones) {
-            this.deshabilitarButton(canto);
+            this.deshabilitarButton(`${canto}`);
         }
     }
 
@@ -66,9 +99,12 @@ class Interfaz {
 
     //Habilitar tablero de cantos
     habilitarTablero() {
-        this.habilitarButton("Envido", "ENVIDO (" + manoJugador.getEnvido() + ")");
-        this.habilitarButton("Flor", "FLOR");
-        this.habilitarButton("Truco", manoJugador.getCantoTruco());
+        if (manoJugador.cartasJugadas() === 0 && juego.getPuntosTruco() === 1 && !juego.getCantoEnvido())
+            this.habilitarButton("Envido", "ENVIDO (" + manoJugador.getEnvido() + ")");
+        if (manoJugador.flor !== 0 && !juego.getFlor())
+            this.habilitarButton("Flor", "FLOR (" + juego.calcularFlor(manoJugador.mostrarMano()) + ")");
+        if ((juego.getTurnoCanto() === "Jugador" || juego.getTurnoCanto() === "") && manoJugador.getCantoTruco() !== "")
+            this.habilitarButton("Truco", manoJugador.getCantoTruco());
     }
 
     //Anotar punto en tablero
@@ -120,7 +156,6 @@ class Interfaz {
         //Cargar manos de jugadores
         this.cargarManoCPU(manoCPU.mostrarMano());
         this.cargarManoJugador(manoJugador.mostrarMano());
-        // document.getElementById("buttonEnvido").innerText = "ENVIDO ("+manoJugador.envido+")";
     }
 
     //Setear id cartas y mostrar - Jugador
@@ -229,6 +264,7 @@ class Mano {
         this.mano = [];
         this.tomarMano();
         this.manoJugada = [];
+        this.flor = juego.calcularFlor(this.mano);
         this.envido = juego.calcularEnvido(this.mano);
         this.cantoTruco = "TRUCO";
     }
@@ -307,11 +343,14 @@ class Mano {
 //Clase encargada de reglas de juego 
 class Juego {
     constructor() {
+        this.flor = false;
+        this.cantoEnvido = false;
         this.puntosTruco = 1;
         this.turnoTruco = "";
         this.turno = this.jugadorInicia();
         this.partidaGral = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
         this.partida = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
+        this.envido = [];
         this.jerarquia =
             [
                 { Num: 1, Palo: "Espada", Posc: 1 },
@@ -337,12 +376,91 @@ class Juego {
         manoJugador = new Mano("Jugador");
         manoCPU = new Mano("CPU");
         interfaz.reset();
-        cpu.reset();
+        cpu = new CPU();
+        this.turnoTruco = "";
         this.partida[0].Puntos = 0;
         this.partida[1].Puntos = 0;
         this.puntosTruco = 1;
+        this.envido = [];
         this.turno = jugador;
+        this.flor = false;
+        this.cantoEnvido = false;
         this.iniciarPartida();
+    }
+
+    //Setea flor para no mostrarla en el tablero cuando se canta
+    setFlor() {
+        this.flor = true;
+    }
+
+    //Devuelve true si hay flor
+    getFlor() {
+        return this.flor;
+    }
+
+    //Marca para saber si se cantó envido
+    setCantoEnvido() {
+        this.cantoEnvido = true;
+    }
+
+    getCantoEnvido(){
+        return this.cantoEnvido;
+    }
+
+    //Calcula puntos del envido
+    calcularPuntosEnvido() {
+        let res = 0;
+        for (let i = 0; i < this.envido.length; i++) {
+            if (this.envido[i + 1] !== "NO QUIERO") {
+                switch (this.envido[i]) {
+                    case "ENVIDO":
+                        res += 2;
+                        break;
+                    case "REAL ENVIDO":
+                        res += 3;
+                        break;
+                    case "FALTA ENVIDO":
+                        if (this.getPuntosGanando() < 15)
+                            res += 30;
+                        else
+                            res += (30 - this.getPuntosGanando());
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else {
+                res += 1;
+            }
+        }
+        return res;
+    }
+
+    //Agregar canto a array de cantos de envido
+    setEnvido(canto) {
+        this.envido.push(canto);
+    }
+
+    //Recorre array de envidos y si hay repetidos devuelve true
+    getEnvidoRepetido() {
+        const res = {};
+        this.envido.forEach(element => {
+            res[element] = (res[element] || 0) + 1;
+        });
+        return res.ENVIDO === 2;
+    }
+
+    //Retorna el puntaje del jugador que va ganando
+    getPuntosGanando() {
+        let res = this.partidaGral[0].Puntos;
+        if (this.partidaGral[1].Puntos > res)
+            res = this.partidaGral[1].Puntos;
+        return res;
+    }
+
+    //Retorna los puntos del truco en juego
+    getPuntosTruco() {
+        return this.puntosTruco;
     }
 
     //Setear puntos del truco
@@ -393,6 +511,7 @@ class Juego {
         else {
             return "CPU";
         }
+        return "Jugador";
     }
 
     //Iniciar partida
@@ -405,12 +524,11 @@ class Juego {
         }
         await interfaz.mensaje("TE TOCA");
         interfaz.habilitarCartas();
-        interfaz.habilitarTablero(manoJugador.getEnvido(), 0, "TRUCO");
+        interfaz.habilitarTablero();
     }
 
     //Anotar punto a jugador
     anotarPunto(jugador, puntos) {
-        console.log(puntos)
         this.partidaGral.filter(e => e.Jugador === jugador)[0].Puntos += puntos;
         for (let i = 0; i < puntos; i++) {
             interfaz.anotarPunto(jugador);
@@ -504,15 +622,16 @@ class Juego {
 
 class CPU {
     constructor() {
-        this.respuesta = false
-        this.trucoDisponible = null;
+        this.respuestaTruco = false;
+        this.respuestaEnvido = false;
+        this.respuestaFin = false;
     }
 
-    //Esperar hasta que el usuario haga click
-    async esperar() {
+    //Esperar hasta que el usuario responda Truco
+    async esperarTruco() {
         return await new Promise(resolve => {
             const interval = setInterval(() => {
-                let condition = this.respuesta;
+                let condition = this.respuestaTruco;
                 if (condition) {
                     resolve();
                     clearInterval(interval);
@@ -521,27 +640,31 @@ class CPU {
         });
     }
 
-    //Reset CPU
-    reset() {
-        this.respuesta = null;
-        this.trucoDisponible = null;
+    //Esperar hasta que el usuario responda Envido
+    async esperarEnvido() {
+        return await new Promise(resolve => {
+            const interval = setInterval(() => {
+                let condition = this.respuestaEnvido;
+                if (condition) {
+                    resolve();
+                    clearInterval(interval);
+                };
+            }, 500);
+        });
     }
 
-    //Setear espera que se usa en function esperar()
-    async setRespuesta() {
-        this.respuesta = true;
+    //Setear respuesta para espera de Truco
+    async setRespuestaTruco() {
+        this.respuestaTruco = true;
         await new Promise(r => setTimeout(r, 600));
-        this.respuesta = false;
+        this.respuestaTruco = false;
     }
 
-    //Evaluar/Cantar Envido
-    async cantarEnvido() {
-        let res = false;
-        await new Promise(r => setTimeout(r, 2000));
-        if (manoCPU.getEnvido() > 20) {
-            res = true;
-        }
-        return res;
+    //Setear respuesta para espera de Envido
+    async setRespuestaEnvido() {
+        this.respuestaEnvido = true;
+        await new Promise(r => setTimeout(r, 600));
+        this.respuestaEnvido = false;
     }
 
     //Evaluar/Cantar Truco
@@ -552,20 +675,20 @@ class CPU {
             jerarquia += juego.jerarquiaCarta(carta);
         }
         let subir = false;
-        if (Math.floor(Math.random() * 3) >= 2) {
+        if (Math.floor(Math.random() * 3) >= 1) {
             subir = true;
         }
         let jerarquiaMano = jerarquia / (3 - manoCPU.cartasJugadas());
         let miTurno = juego.getTurnoCanto();
-        if ((miTurno === "CPU" || miTurno === "") && manoCPU.getCantoTruco() !== "" && jerarquiaMano <= 10) {
-            if (subir) {
+        if ((miTurno === "CPU" || miTurno === "") && jerarquiaMano <= 15) {
+            if (subir && manoCPU.getCantoTruco() !== "") {
                 await new Promise(r => setTimeout(r, 2000));
                 manoJugador.moverTruco(manoCPU.getCantoTruco());
                 res = manoCPU.getCantoTruco();
                 juego.moverCantoTruco();
             }
             else {
-                switch (manoJugador.getCantoTruco()) {
+                switch (manoJugador.getCantoTruco() && manoJugador.cartasJugadas() > 0) {
                     case "TRUCO":
                         juego.setPuntosTruco(2);
                         break;
@@ -584,15 +707,85 @@ class CPU {
         return res;
     }
 
+    //Evaluar/Cantar Envido
+    async cantarEnvido(canto) {
+        let res = "NO QUIERO";
+        if (!juego.getFlor() && !juego.getCantoEnvido()) {
+            let envido = manoCPU.getEnvido();
+            let subir = false;
+            if (Math.floor(Math.random() * 3) >= 1) {
+                subir = true;
+            }
+            if (subir) {
+                switch (canto) {
+                    case "ENVIDO":
+                        if (envido >= 27)
+                            res = "FALTA ENVIDO";
+                        else if (envido >= 24)
+                            res = "REAL ENVIDO";
+                        else if (envido >= 20 && !juego.getEnvidoRepetido()) {
+                            res = "ENVIDO";
+                        }
+                        break;
+                    case "REAL ENVIDO":
+                        if (envido >= 24)
+                            res = "FALTA ENVIDO";
+                        break;
+                    case "FALTA ENVIDO":
+                        if (envido >= 27)
+                            res = "QUIERO";
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else {
+                switch (canto) {
+                    case "ENVIDO":
+                        if (envido >= 20)
+                            res = "QUIERO"
+                        break;
+                    case "REAL ENVIDO":
+                        if (envido >= 24)
+                            res = "QUIERO"
+                        break;
+                    case "FALTA ENVIDO":
+                        if (envido >= 27)
+                            res = "QUIERO";
+                        break;
+                    default:
+                        break;
+                }
+            }       
+            juego.setCantoEnvido();
+        }
+        juego.setEnvido(res);
+        return res;
+    }
+
     //Responder según carta del oponente
     async responderCarta(cartaJugador) {
+        if (manoCPU.cartasJugadas() === 0) {
+            let cantoEnvido = await this.cantarEnvido("ENVIDO");
+            if (cantoEnvido.search("QUIERO") === -1) {
+                await interfaz.mensaje(cantoEnvido);
+                interfaz.habilitarRespuesta("Envido", cantoEnvido);
+                await this.esperarEnvido();
+                if (this.respuestaFin === true) {
+                    return;
+                }
+            }
+        }
         let cantoTruco = await this.cantarTruco();
         if (cantoTruco.search("QUIERO") === -1) {
             await interfaz.mensaje(cantoTruco);
             manoJugador.moverTruco(cantoTruco);
-            interfaz.habilitarRespuesta(manoJugador.getCantoTruco());
+            interfaz.habilitarRespuesta("Truco", manoJugador.getCantoTruco());
             juego.pasarTurno();
-            await this.esperar();
+            await this.esperarTruco();
+            if (this.respuestaFin === true) {
+                return;
+            }
         }
         let numCartas = 3 - manoCPU.cartasJugadas();
         let ganaCPU = false;
@@ -618,13 +811,29 @@ class CPU {
 
     //Jugar carta aleatoria
     async jugarCarta() {
+        if (manoCPU.cartasJugadas() === 0) {
+            let cantoEnvido = await this.cantarEnvido("ENVIDO");
+            if (cantoEnvido.search("QUIERO") === -1) {
+                await interfaz.mensaje(cantoEnvido);
+                interfaz.habilitarRespuesta("Envido", cantoEnvido);
+                interfaz.habilitarTablero();
+                await this.esperarEnvido();
+                if (this.respuestaFin === true) {
+                    return;
+                }
+            }
+        }
         let cantoTruco = await this.cantarTruco();
         if (cantoTruco.search("QUIERO") === -1) {
             await interfaz.mensaje(cantoTruco);
             manoCPU.moverTruco();
-            interfaz.habilitarRespuesta(manoJugador.getCantoTruco());
+            interfaz.habilitarRespuesta("Truco", manoJugador.getCantoTruco());
+            interfaz.habilitarTablero();
             juego.pasarTurno();
-            await this.esperar();
+            await this.esperarTruco();
+            if (this.respuestaFin === true) {
+                return;
+            }
         }
         await new Promise(r => setTimeout(r, 2000));
         let cartaCPU = manoCPU.randomCarta();
@@ -636,6 +845,7 @@ class CPU {
 
 //Lanzar carta al hacer click en button
 async function lanzarCarta(carta) {
+    interfaz.deshabilitarTablero();
     interfaz.deshabilitarCartas();
     manoJugador.jugarCarta(carta.id, "Jugador");
     juego.pasarTurno();
@@ -669,14 +879,15 @@ async function lanzarCarta(carta) {
         await juego.duelo(manoCPU.getUltimaCartaJugada(), carta.id)
     }
     interfaz.habilitarCartas();
+    interfaz.habilitarTablero();
 }
 
 async function cantarTruco(truco) {
-    let canto = truco.innerHTML;
-    await interfaz.mensaje(canto);
-    interfaz.deshabilitarRespuesta();
     interfaz.deshabilitarCartas();
     interfaz.deshabilitarTablero();
+    let canto = truco.innerHTML;
+    await interfaz.mensaje(canto);
+    interfaz.deshabilitarRespuesta("Truco");
     manoCPU.moverTruco(canto);
     let puntos = 0;
     switch (truco.innerText) {
@@ -708,65 +919,114 @@ async function cantarTruco(truco) {
             break;
         default:
             manoJugador.moverTruco(respuesta);
-            interfaz.habilitarRespuesta(manoJugador.getCantoTruco());
-            if (manoJugador.getCantoTruco() !== "") {
-                interfaz.habilitarButton("Truco", manoJugador.getCantoTruco());
-            }
-            else {
-                interfaz.deshabilitarButton("Truco");
-            }
+            interfaz.habilitarRespuesta("Truco", manoJugador.getCantoTruco());
+            await cpu.esperarTruco();
             break;
     }
+    await cpu.setRespuestaTruco();
     interfaz.habilitarCartas();
 }
 
-async function cantarEnvido() {
+async function cantarEnvido(canto) {
     interfaz.deshabilitarButton("Envido");
-    await interfaz.mensaje("ENVIDO");
-    let respuesta = await cpu.respuestaEnvido();
+    let cantoEnvido = canto.innerText.split("(")[0].trim();
+    await interfaz.mensaje(cantoEnvido);
+    juego.setEnvido(cantoEnvido);
+    juego.setCantoEnvido();
+    let respuesta = await cpu.cantarEnvido(cantoEnvido);
     await interfaz.mensaje(respuesta);
-    if (respuesta === "NO QUIERO") {
-        juego.anotarPunto("Jugador");
+    if (respuesta.search("QUIERO") === -1) {
+        interfaz.habilitarRespuesta("Envido", respuesta);
+    }
+    else if (respuesta === "QUIERO") {
+        await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
+        await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
+        let puntos = juego.calcularPuntosEnvido();
+        if (manoJugador.getEnvido() > manoCPU.getEnvido())
+            juego.anotarPunto("Jugador", puntos);
+        else
+            juego.anotarPunto("CPU", puntos);
+
     }
     else {
-        await interfaz.mensaje(manoJugador.envido);
-        if (manoJugador.envido > manoCPU.envido) {
-            await interfaz.mensaje("SON BUENAS");
-            for (let i = 0; i < 2; i++) {
-                juego.anotarPunto("Jugador");
-            }
-        }
-        else {
-            for (let i = 0; i < 2; i++) {
-                juego.anotarPunto("CPU");
-            }
-            await interfaz.mensaje(manoCPU.envido);
-        }
+        let puntos = juego.calcularPuntosEnvido();
+        juego.anotarPunto("Jugador", puntos);
+        interfaz.deshabilitarRespuesta("Envido");
     }
+    await cpu.setRespuestaEnvido();
 }
 
 async function cantarFlor() {
-    // await interfaz.mensaje("FLOR");
-    manoJugador.flor = 1;
+    await interfaz.mensaje("FLOR");
+    juego.anotarPunto("Jugador", 3);
+    juego.setFlor();
+    interfaz.deshabilitarRespuesta("Envido");
+    interfaz.deshabilitarButton("Flor")
+    cpu.setRespuestaEnvido();
 }
 
-async function quiero() {
-    switch (manoCPU.getCantoTruco()) {
-        case "TRUCO":
-            juego.setPuntosTruco(2);
+async function quiero(opcion) {
+    let opcionEspera = opcion.parentElement.id;
+    switch (opcion.parentElement.id) {
+        case "Truco":
+            switch (manoCPU.getCantoTruco()) {
+                case "TRUCO":
+                    juego.setPuntosTruco(2);
+                    break;
+                case "RETRUCO":
+                    juego.setPuntosTruco(3);
+                    break;
+                case "VALE 4":
+                    juego.setPuntosTruco(4);
+                    break;
+                default:
+                    break;
+            }
             break;
-        case "RETRUCO":
-            juego.setPuntosTruco(3);
-            break;
-        case "VALE 4":
-            juego.setPuntosTruco(4);
+        case "Envido":
+            await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
+            await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
+            let puntos = juego.calcularPuntosEnvido();
+            if (manoJugador.getEnvido() > manoCPU.getEnvido())
+                juego.anotarPunto("Jugador", puntos);
+            else
+                juego.anotarPunto("CPU", puntos);
             break;
         default:
             break;
     }
-    interfaz.habilitarButton("Truco", manoJugador.getCantoTruco());
-    interfaz.deshabilitarRespuesta();
-    await cpu.setRespuesta();
+    interfaz.deshabilitarRespuesta(opcion.parentElement.id);
+    if (opcionEspera === "Truco")
+        await cpu.setRespuestaTruco();
+    else
+        await cpu.setRespuestaEnvido();
+}
+
+async function noQuiero(opcion) {
+    const canto = opcion.parentElement;
+    interfaz.deshabilitarRespuesta(canto.id);
+    if (canto.id === "Truco") {
+        switch (canto.firstElementChild.innerText) {
+            case "RETRUCO":
+                juego.anotarPunto("CPU", 1);
+                break;
+            case "VALE 4":
+                juego.anotarPunto("CPU", 2);
+                break;
+            case "QUIERO":
+                juego.anotarPunto("CPU", 3);
+                break;
+            default:
+                break;
+        }
+        juego.reset("CPU");
+    }
+    else if (canto.id === "Envido") {
+        juego.setEnvido("NO QUIERO");
+        let puntos = juego.calcularPuntosEnvido();
+        juego.anotarPunto("CPU", puntos);
+        cpu.setRespuestaEnvido();
+    }
 }
 
 const juego = new Juego();
@@ -774,5 +1034,5 @@ const interfaz = new Interfaz();
 let barajaJuego = new Baraja();
 let manoJugador = new Mano("Jugador");
 let manoCPU = new Mano("CPU");
-const cpu = new CPU();
+let cpu = new CPU();
 juego.reset(juego.jugadorInicia());

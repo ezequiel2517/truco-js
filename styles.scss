@@ -28,12 +28,16 @@ $colorButton: rgb(98, 108, 212);
     background-size: 1000px;
     border: 3px solid black;
     border-radius: 10px;
-    $iter: 1, 2, 3;
+    $iter: 1,
+    2,
+    3;
+
     @each $i in $iter {
         @include hoverCarta(#{$i}, -20, ($i) * 15 - 30);
     }
-    background-position-x: -83.3*1 + px;
-    background-position-y:  -127.7*4 + px;
+
+    background-position-x: -83.3*1+px;
+    background-position-y: -127.7*4+px;
 }
 
 @mixin cartaPlay {
@@ -42,7 +46,7 @@ $colorButton: rgb(98, 108, 212);
     background-image: url('images/baraja.png');
     background-size: 1000px;
     background-position-x: -83.3*1 + px;
-    background-position-y:  -127.7*4 + px;
+    background-position-y: -127.7*4 + px;
     visibility: hidden;
     border: 3px solid black;
     border-radius: 10px;
@@ -50,7 +54,7 @@ $colorButton: rgb(98, 108, 212);
 }
 
 @mixin transformCarta($hijo, $right, $transform) {
-    &:nth-child(#{$hijo}){
+    &:nth-child(#{$hijo}) {
         transform: translateY(0px) rotate(#{$transform}deg);
         top: 10px;
         right: #{$right}px;
@@ -58,18 +62,18 @@ $colorButton: rgb(98, 108, 212);
 }
 
 @mixin hoverCarta($hijo, $traslate, $rotate) {
-    &:nth-child(#{$hijo}):hover{
+    &:nth-child(#{$hijo}):hover {
         z-index: 2;
         transform: translate(#{$traslate}px) rotate(#{$rotate}deg) scale(1.2);
     }
 }
 
-*{
+* {
     margin: 0px;
     padding: 0px;
 }
 
-body{
+body {
     background-color: $colorFondo;
 }
 
@@ -80,8 +84,8 @@ body{
     margin-top: 20px;
 }
 
-.mesa{
-    background-color: $colorMesa;    
+.mesa {
+    background-color: $colorMesa;
     border: 15px solid $colorBordeMesa;
     border-radius: 50%;
     width: 500px;
@@ -89,12 +93,12 @@ body{
     box-shadow: 7px 7px $colorSombraMesa
 }
 
-.manoJugador{
+.manoJugador {
     @include centrarElementoGame;
     top: 530px;
 }
 
-.manoCPU{
+.manoCPU {
     @include centrarElementoGame;
     top: 100px;
     transform: scale(0.7);
@@ -114,13 +118,13 @@ body{
     @include transformCarta(3, 15, 20);
 }
 
-.manoJugadorPlay{
+.manoJugadorPlay {
     @include centrarElementoGame;
     top: 410px;
     gap: 10px;
 }
 
-.manoCPUPlay{
+.manoCPUPlay {
     @include centrarElementoGame;
     top: 280px;
     gap: 10px;
@@ -129,15 +133,16 @@ body{
 .cartaJugadorPlay {
     @include cartaPlay;
 }
+
 .cartaCPUPlay {
     @include cartaPlay;
 }
 
-.iconPlayer{
+.iconPlayer {
     width: 150px;
 }
 
-#mensaje{
+#mensaje {
     position: absolute;
     top: 360px;
     font-size: 30px;
@@ -148,40 +153,59 @@ body{
     text-shadow: 2px 2px black;
 }
 
-.mensajeAlerta{
+.mensajeAlerta {
     animation-name: animationAlert;
     animation-duration: 10s;
 }
 
 @keyframes animationAlert {
     @for $i from 0 to 20 {
-        #{(100% - 5*$i)} {transform: scale(1 + $i*0.1); visibility: visible};
+        #{(100% - 5*$i)} {
+            transform: scale(1 + $i*0.1);
+            visibility: visible
         }
+
+        ;
+    }
 }
 
 @mixin tableroTemplate {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    gap: 5px;
     margin-top: 50px;
-    button{
-        width: 100px;
-        height: 30px;
-        border-radius: 15px;
-        font-size: 15px;
-        border: 0px;
-        color: rgb(255, 255, 255);
-        box-shadow: 3px 3px black;
-        background-color: $colorButton;
+    gap: 10px;
+    position: absolute;
+    bottom: 100px;
+    right: 200px;
+
+    div {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        button {
+            width: 100px;
+            height: 30px;
+            border-radius: 15px 15px 15px 15px;
+            font-size: 15px;
+            border-bottom: 5px;
+            color: rgb(255, 255, 255);
+            box-shadow: 3px 3px black;
+            background-color: $colorButton;
+            cursor: pointer;
+        }
+        .disableButton{
+            background-color: gray;
+        }
     }
 }
 
-#tablero{
+#tablero {
     @include tableroTemplate;
 }
 
-#tableroRespuesta{
+#tableroRespuesta {
     position: absolute;
     top: 400px;
     z-index: 100;
@@ -189,7 +213,7 @@ body{
     visibility: hidden;
 }
 
-.contador{
+.contador {
     position: absolute;
     top: 35px;
     right: 350px;
@@ -197,33 +221,37 @@ body{
     border-radius: 10px;
     background-color: $colorContador;
     box-shadow: 3px 3px black;
-    table{
-        th{
+
+    table {
+        th {
             font-size: 20px;
             border: 10px solid $colorContador;
             border-collapse: collapse;
             font-family: $fontContador;
             text-align: center;
         }
-        tr{
+
+        tr {
             vertical-align: top;
         }
     }
 }
 
-.puntoJugador, .puntoCPU {
+.puntoJugador,
+.puntoCPU {
     width: 25px;
     height: 25px;
     margin: auto;
 }
 
 .puntoFinal {
-background: linear-gradient(135deg, transparent calc(50% - 2px), rgb(0, 0, 0) 50%, transparent calc(50% + 2px) );
+    background: linear-gradient(135deg, transparent calc(50% - 2px), rgb(0, 0, 0) 50%, transparent calc(50% + 2px));
 }
 
-ul{
+ul {
     list-style: none;
-    li{
+
+    li {
         margin-bottom: 5px !important;
     }
 }

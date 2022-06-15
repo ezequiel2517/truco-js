@@ -259,18 +259,30 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  gap: 5px;
   margin-top: 50px;
+  gap: 10px;
+  position: absolute;
+  bottom: 100px;
+  right: 200px;
 }
-#tablero button {
+#tablero div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+#tablero div button {
   width: 100px;
   height: 30px;
-  border-radius: 15px;
+  border-radius: 15px 15px 15px 15px;
   font-size: 15px;
-  border: 0px;
+  border-bottom: 5px;
   color: rgb(255, 255, 255);
   box-shadow: 3px 3px black;
   background-color: rgb(98, 108, 212);
+  cursor: pointer;
+}
+#tablero div .disableButton {
+  background-color: gray;
 }
 
 #tableroRespuesta {
@@ -280,19 +292,31 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  gap: 5px;
   margin-top: 50px;
+  gap: 10px;
+  position: absolute;
+  bottom: 100px;
+  right: 200px;
   visibility: hidden;
 }
-#tableroRespuesta button {
+#tableroRespuesta div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+#tableroRespuesta div button {
   width: 100px;
   height: 30px;
-  border-radius: 15px;
+  border-radius: 15px 15px 15px 15px;
   font-size: 15px;
-  border: 0px;
+  border-bottom: 5px;
   color: rgb(255, 255, 255);
   box-shadow: 3px 3px black;
   background-color: rgb(98, 108, 212);
+  cursor: pointer;
+}
+#tableroRespuesta div .disableButton {
+  background-color: gray;
 }
 
 .contador {
@@ -315,7 +339,8 @@ body {
   vertical-align: top;
 }
 
-.puntoJugador, .puntoCPU {
+.puntoJugador,
+.puntoCPU {
   width: 25px;
   height: 25px;
   margin: auto;
