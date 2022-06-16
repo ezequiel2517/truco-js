@@ -184,6 +184,7 @@ class Interfaz {
 
     //Reset de interfaz
     reset() {
+        this.deshabilitarRespuesta("Envido");
         //Ocultar cartas en la mesa
         for (let carta of document.getElementsByClassName("cartaJugadorPlay")) {
             carta.style.visibility = "hidden";
@@ -985,7 +986,6 @@ async function cantarEnvido(canto) {
     let cantoEnvido = canto.innerText.split("(")[0].trim();
     juego.setEnvido(cantoEnvido);
     await interfaz.mensaje(cantoEnvido);
-    juego.setEnvido(cantoEnvido);
     let respuesta = await cpu.cantarEnvido(cantoEnvido);
     await interfaz.mensaje(respuesta);
     if (respuesta.search("QUIERO") === -1) {
