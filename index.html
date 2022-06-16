@@ -12,62 +12,62 @@
 
 <body>
     <div class="game">
-        <span id="mensaje">TE TOCA</span>
-        <img class="iconPlayer" src="images/player_01.png" alt="oponente">
-        <div class="manoCPU">
-            <div class="cartaCPU"></div>
-            <div class="cartaCPU"></div>
-            <div class="cartaCPU"></div>
-        </div>
-        <div class="manoCPUPlay">
-            <div class="cartaCPUPlay"></div>
-            <div class="cartaCPUPlay"></div>
-            <div class="cartaCPUPlay"></div>
-        </div>
-        <div class="mesa"></div>
-        <div class="manoJugadorPlay">
-            <div class="cartaJugadorPlay"></div>
-            <div class="cartaJugadorPlay"></div>
-            <div class="cartaJugadorPlay"></div>
-        </div>
-        <div class="manoJugador">
-            <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
-            <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
-            <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
+        <div class="mesa">
+            <span id="mensaje">TE TOCA</span>
+            <img class="iconPlayer" src="images/cpu_01.png" alt="oponente">
+            <div class="manoCPU">
+                <div class="cartaCPU"></div>
+                <div class="cartaCPU"></div>
+                <div class="cartaCPU"></div>
+            </div>
+            <div class="manoCPUPlay">
+                <div class="cartaCPUPlay"></div>
+                <div class="cartaCPUPlay"></div>
+                <div class="cartaCPUPlay"></div>
+            </div>
+            <div class="manoJugadorPlay">
+                <div class="cartaJugadorPlay"></div>
+                <div class="cartaJugadorPlay"></div>
+                <div class="cartaJugadorPlay"></div>
+            </div>
+            <div class="manoJugador">
+                <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
+                <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
+                <div class="cartaJugador" onclick="lanzarCarta(this)"></div>
+            </div>
         </div>
         <div id="tablero">
-            <div id="Envido">
-                <button onclick="cantarEnvido(this)">ENVIDO</button>
-            </div>
-            <div id="Flor">
-                <button onclick="cantarFlor(this)">FLOR</button>
-            </div>
-            <div id="Truco">
-                <button onclick="cantarTruco(this)">TRUCO</button>
-            </div>
+            <ul class="opcion" id="Envido">
+                <li">ENVIDO +</button>
+            </ul>
+            <ul class="opcion" id="Flor">
+                <li onclick="cantarFlor(this)">FLOR</li>
+            </ul>
+            <ul class="opcion" id="Truco">
+                <li onclick="cantarTruco(this)">TRUCO</a>
+            </ul>
+        </div>
+        <div class="contador">
+            <table id="tableContador">
+                <tr>
+                    <th>JUGADOR</th>
+                    <th>CPU</th>
+                </tr>
+                <tr>
+                    <td>
+                        <ul id="partidaJugador">
+                            <li class="puntoJugador"></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul id="partidaCPU">
+                            <li class="puntoCPU"></li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
-    <div class="contador">
-        <table id="tableContador">
-            <tr>
-                <th>JUGADOR</th>
-                <th>CPU</th>
-            </tr>
-            <tr>
-                <td>
-                    <ul id="partidaJugador">
-                        <li class="puntoJugador"></li>
-                    </ul>
-                </td>
-                <td>
-                    <ul id="partidaCPU">
-                        <li class="puntoCPU"></li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    </div>
-
     <script src="script.js"></script>
 </body>
 

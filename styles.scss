@@ -2,10 +2,11 @@ $colorMesa: #a3c891;
 $colorBordeMesa: grey;
 $colorSombraMesa: lightgrey;
 $colorFondo: rgb(234, 236, 199);
-$colorContador: rgb(185, 74, 74);
+$colorContador: #a3c891;
 $fontMensaje: 'Lilita One', cursive;
 $fontContador: 'Jua', sans-serif;
 $colorButton: rgb(98, 108, 212);
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Permanent+Marker&display=swap');
 
 
 
@@ -15,7 +16,7 @@ $colorButton: rgb(98, 108, 212);
 
 @mixin centrarElementoGame {
     display: flex;
-    position: absolute;
+    position: relative;
     justify-content: center;
 }
 
@@ -73,36 +74,58 @@ $colorButton: rgb(98, 108, 212);
     padding: 0px;
 }
 
+html,
 body {
-    background-color: $colorFondo;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: azure;
 }
 
 .game {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+    border: 5px solid black;
+    border-radius: 15px;
+    height: 80%;
+    width: 70%;
+    display: grid;
+    grid-template-areas:
+        "mesa contador"
+        "mesa tablero";
+    grid-template-columns: 4fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    background-color: $colorFondo;
+    ;
 }
 
 .mesa {
+    margin: auto;
+    grid-area: mesa;
     background-color: $colorMesa;
     border: 15px solid $colorBordeMesa;
     border-radius: 50%;
-    width: 500px;
-    height: 450px;
-    box-shadow: 7px 7px $colorSombraMesa
+    width: 450px;
+    height: 400px;
+    box-shadow: 7px 7px $colorSombraMesa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
 }
 
 .manoJugador {
     @include centrarElementoGame;
-    top: 530px;
+    top: -205px;
+    transform: scale(0.95);
 }
 
 .manoCPU {
     @include centrarElementoGame;
-    top: 100px;
-    transform: scale(0.7);
-
+    top: -205px;
+    transform: scale(0.65);
 }
 
 .cartaJugador {
@@ -120,14 +143,16 @@ body {
 
 .manoJugadorPlay {
     @include centrarElementoGame;
-    top: 410px;
+    top: -225px;
     gap: 10px;
+    transform: scale(0.9);
 }
 
 .manoCPUPlay {
     @include centrarElementoGame;
-    top: 280px;
+    top: -200px;
     gap: 10px;
+    transform: scale(0.9);
 }
 
 .cartaJugadorPlay {
@@ -139,7 +164,9 @@ body {
 }
 
 .iconPlayer {
-    width: 150px;
+    position: relative;
+    top: -150px;
+    width: 140px;
 }
 
 #mensaje {
@@ -169,58 +196,49 @@ body {
     }
 }
 
-@mixin tableroTemplate {
+#tablero {
+    grid-area: tablero;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
-    margin-top: 50px;
-    gap: 10px;
-    position: absolute;
-    bottom: 100px;
-    right: 200px;
+    align-items: flex-end;
+    gap: 4px;
+    margin-bottom: 10px;
+    margin-right: 10px;
 
-    div {
+    .opcion {
+        width: 100px;
+        overflow: hidden;
+        list-style: none;
+        background-color: $colorButton;
+        font-size: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: rgb(255, 255, 255);
+        cursor: pointer;
+        border-radius: 10px 10px 10px 10px;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
-
-        button {
-            width: 100px;
-            height: 30px;
-            border-radius: 15px 15px 15px 15px;
-            font-size: 15px;
-            border-bottom: 5px;
-            color: rgb(255, 255, 255);
-            box-shadow: 3px 3px black;
-            background-color: $colorButton;
-            cursor: pointer;
-        }
-        .disableButton{
-            background-color: gray;
-        }
+        align-items: center;
+        justify-items: center;
+        padding: 5px 0px;
+        gap: 15px;
     }
 }
 
-#tablero {
-    @include tableroTemplate;
-}
-
-#tableroRespuesta {
-    position: absolute;
-    top: 400px;
-    z-index: 100;
-    @include tableroTemplate;
-    visibility: hidden;
-}
-
 .contador {
-    position: absolute;
-    top: 35px;
-    right: 350px;
-    border: 2px solid $colorContador;
+    justify-self: end;
+    margin-right: 45px;
+    margin-top: 40px;
+    grid-area: contador;
+    box-shadow: 7px 7px lightgrey;
+    border: 5px solid grey;
     border-radius: 10px;
     background-color: $colorContador;
-    box-shadow: 3px 3px black;
+    width: 60%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
 
     table {
         th {
@@ -235,6 +253,14 @@ body {
             vertical-align: top;
         }
     }
+
+    ul {
+        list-style: none;
+
+        li {
+            margin-bottom: 5px !important;
+        }
+    }
 }
 
 .puntoJugador,
@@ -245,13 +271,5 @@ body {
 }
 
 .puntoFinal {
-    background: linear-gradient(135deg, transparent calc(50% - 2px), rgb(0, 0, 0) 50%, transparent calc(50% + 2px));
-}
-
-ul {
-    list-style: none;
-
-    li {
-        margin-bottom: 5px !important;
-    }
+    background: linear-gradient(135deg, transparent calc(50% - 3px), white 50%, transparent calc(50% + 3px));
 }
