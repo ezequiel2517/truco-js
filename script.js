@@ -15,7 +15,7 @@ class Interfaz {
     habilitarButton(opcion, texto) {
         if (opcion === "Envido") {
             let parent = document.querySelector(`#${opcion}`);
-            parent.style.cursor="pointer";
+            parent.style.cursor = "pointer";
             parent.style.backgroundColor = "rgb(98, 108, 212)";
             let button = parent.lastElementChild;
             button.innerText = texto;
@@ -56,7 +56,7 @@ class Interfaz {
         else {
             let parent = document.querySelector(`#${opcion}`);
             parent.style.backgroundColor = "rgb(98, 108, 212)";
-            parent.style.cursor="pointer";
+            parent.style.cursor = "pointer";
             let button = parent.lastElementChild;
             button.innerText = texto;
             button.setAttribute("onclick", "cantar" + opcion + "(this)");
@@ -67,7 +67,7 @@ class Interfaz {
     habilitarRespuesta(opcion, respuesta) {
         let parent = document.querySelector(`#${opcion}`);
         parent.style.backgroundColor = "rgb(98, 108, 212)";
-        parent.style.cursor="pointer";
+        parent.style.cursor = "pointer";
         while (parent.childElementCount > 1) {
             parent.removeChild(parent.firstChild);
         }
@@ -88,7 +88,7 @@ class Interfaz {
         opcionTablero.prepend(quiero);
         if (opcion === "Envido" && respuesta !== "") {
             let envido = document.querySelector("#Envido").lastElementChild;
-            envido.innerText="ENVIDO (" + manoJugador.getEnvido() + ")";
+            envido.innerText = "ENVIDO (" + manoJugador.getEnvido() + ")";
             let ordenEnvido = ["ENVIDO", "ENVIDO", "REAL ENVIDO", "FALTA ENVIDO"];
             if (juego.getEnvidoRepetido())
                 ordenEnvido.shift();
@@ -118,6 +118,23 @@ class Interfaz {
         document.getElementById("mensaje").classList.add("mensajeAlerta");
         await new Promise(r => setTimeout(r, 500));
         document.getElementById("mensaje").classList.remove("mensajeAlerta");
+    }
+
+    //Mostrar canto
+    async dialogue(mensaje, jugador) {
+        let posicionDialogue = "20px";
+        if (jugador==="Jugador")
+            posicionDialogue = "450px";
+        document.getElementById("dialogue").style.top = posicionDialogue;
+        document.getElementById("dialogueMensaje").innerText = mensaje;
+        //Mostrar animación de mensaje
+        document.getElementById("dialogue").classList.add("dialogueAlerta");
+        await new Promise(r => setTimeout(r, 500));
+        document.getElementById("dialogue").classList.remove("dialogueAlerta");
+        document.getElementById("dialogue").style.visibility="visible";
+        await new Promise(r => setTimeout(r, 300));
+        document.getElementById("dialogue").style.visibility="hidden";
+
     }
 
     //Deshabilitar click en cartas
@@ -323,7 +340,7 @@ class Mano {
         return this.cantoTruco;
     }
 
-    getFlor(){
+    getFlor() {
         return this.flor;
     }
 
@@ -425,20 +442,20 @@ class Juego {
 
     //Reset del juego
     reset(jugador) {
-        barajaJuego = new Baraja();
-        manoJugador = new Mano("Jugador");
-        manoCPU = new Mano("CPU");
-        interfaz.reset();
-        cpu = new CPU();
-        this.turnoTruco = "";
-        this.partida[0].Puntos = 0;
-        this.partida[1].Puntos = 0;
-        this.puntosTruco = 1;
-        this.envido = [];
-        this.turno = jugador;
-        this.flor = false;
-        this.cantoEnvido = false;
-        this.iniciarPartida();
+            barajaJuego = new Baraja();
+            manoJugador = new Mano("Jugador");
+            manoCPU = new Mano("CPU");
+            interfaz.reset();
+            cpu = new CPU();
+            this.turnoTruco = "";
+            this.partida[0].Puntos = 0;
+            this.partida[1].Puntos = 0;
+            this.puntosTruco = 1;
+            this.envido = [];
+            this.turno = jugador;
+            this.flor = false;
+            this.cantoEnvido = false;
+            this.iniciarPartida();
     }
 
     //Setea flor para no mostrarla en el tablero cuando se canta
@@ -821,7 +838,8 @@ class CPU {
             let cantoEnvido = await this.cantarEnvido("ENVIDO");
             if (cantoEnvido.search("QUIERO") === -1) {
                 juego.setCantoEnvido();
-                await interfaz.mensaje(cantoEnvido);
+                // await interfaz.mensaje(cantoEnvido);
+                await interfaz.dialogue(cantoEnvido, "CPU");
                 interfaz.habilitarRespuesta("Envido", cantoEnvido);
                 await this.esperarEnvido();
                 if (this.respuestaFin === true) {
@@ -831,7 +849,8 @@ class CPU {
         }
         let cantoTruco = await this.cantarTruco();
         if (cantoTruco.search("QUIERO") === -1) {
-            await interfaz.mensaje(cantoTruco);
+            // await interfaz.mensaje(cantoTruco);
+            await interfaz.dialogue(cantoTruco, "CPU");
             manoJugador.moverTruco(cantoTruco);
             interfaz.habilitarRespuesta("Truco", manoJugador.getCantoTruco());
             juego.pasarTurno();
@@ -868,7 +887,7 @@ class CPU {
             let cantoEnvido = await this.cantarEnvido("ENVIDO");
             if (cantoEnvido.search("QUIERO") === -1) {
                 juego.setCantoEnvido();
-                await interfaz.mensaje(cantoEnvido);
+                await interfaz.dialogue(cantoEnvido, "CPU");
                 interfaz.habilitarRespuesta("Envido", cantoEnvido);
                 interfaz.habilitarTablero();
                 await this.esperarEnvido();
@@ -879,7 +898,7 @@ class CPU {
         }
         let cantoTruco = await this.cantarTruco();
         if (cantoTruco.search("QUIERO") === -1) {
-            await interfaz.mensaje(cantoTruco);
+            await interfaz.dialogue(cantoTruco, "CPU");
             manoCPU.moverTruco();
             interfaz.habilitarRespuesta("Truco", manoJugador.getCantoTruco());
             interfaz.habilitarTablero();
@@ -940,7 +959,8 @@ async function cantarTruco(truco) {
     interfaz.deshabilitarCartas();
     interfaz.deshabilitarTablero();
     let canto = truco.innerHTML;
-    await interfaz.mensaje(canto);
+    // await interfaz.mensaje(canto);
+    await interfaz.dialogue(canto, "Jugador");
     interfaz.deshabilitarRespuesta("Truco");
     manoCPU.moverTruco(canto);
     let puntos = 0;
@@ -962,7 +982,8 @@ async function cantarTruco(truco) {
     juego.moverCantoTruco();
     let respuesta = await cpu.cantarTruco();
     juego.pasarTurno();
-    await interfaz.mensaje(respuesta);
+    // await interfaz.mensaje(respuesta);
+    await interfaz.dialogue(respuesta, "CPU");
     switch (respuesta) {
         case "QUIERO":
             juego.setPuntosTruco(puntos + 1);
@@ -985,15 +1006,19 @@ async function cantarEnvido(canto) {
     interfaz.deshabilitarButton("Envido");
     let cantoEnvido = canto.innerText.split("(")[0].trim();
     juego.setEnvido(cantoEnvido);
-    await interfaz.mensaje(cantoEnvido);
+    // await interfaz.mensaje(cantoEnvido);
+    await interfaz.dialogue(cantoEnvido, "Jugador");
     let respuesta = await cpu.cantarEnvido(cantoEnvido);
-    await interfaz.mensaje(respuesta);
+    // await interfaz.mensaje(respuesta);
+    await interfaz.dialogue(respuesta, "CPU");
     if (respuesta.search("QUIERO") === -1) {
         interfaz.habilitarRespuesta("Envido", respuesta);
     }
     else if (respuesta === "QUIERO") {
-        await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
-        await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
+        // await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
+        await interfaz.dialogue("Tengo " + manoJugador.getEnvido(), "Jugador");
+        // await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
+        await interfaz.dialogue("Tengo " + manoCPU.getEnvido(), "CPU");
         let puntos = juego.calcularPuntosEnvido();
         if (manoJugador.getEnvido() > manoCPU.getEnvido())
             juego.anotarPunto("Jugador", puntos);
@@ -1011,7 +1036,8 @@ async function cantarEnvido(canto) {
 }
 
 async function cantarFlor() {
-    await interfaz.mensaje("FLOR");
+    // await interfaz.mensaje("FLOR");
+    await interfaz.dialogue("FLOR", "Jugador");
     juego.anotarPunto("Jugador", 3);
     juego.setFlor();
     interfaz.deshabilitarRespuesta("Envido");
@@ -1020,7 +1046,8 @@ async function cantarFlor() {
 }
 
 async function quiero(opcion) {
-    await interfaz.mensaje("QUIERO");
+    // await interfaz.mensaje("QUIERO");
+    await interfaz.dialogue("QUIERO", "Jugador")
     let opcionEspera = opcion.parentElement.id;
     switch (opcion.parentElement.id) {
         case "Truco":
@@ -1039,8 +1066,10 @@ async function quiero(opcion) {
             }
             break;
         case "Envido":
-            await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
-            await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
+            // await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
+            await interfaz.dialogue("Tengo " + manoJugador.getEnvido(), "Jugador");
+            // await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
+            await interfaz.dialogue("Tengo " + manoCPU.getEnvido(), "CPU");
             let puntos = juego.calcularPuntosEnvido();
             if (manoJugador.getEnvido() > manoCPU.getEnvido())
                 juego.anotarPunto("Jugador", puntos);
@@ -1058,7 +1087,8 @@ async function quiero(opcion) {
 }
 
 async function noQuiero(opcion) {
-    await interfaz.mensaje("NO QUIERO");
+    // await interfaz.mensaje("NO QUIERO");
+    await interfaz.dialogue("NO QUIERO", "Jugador");
     const canto = opcion.parentElement;
     interfaz.deshabilitarRespuesta(canto.id);
     if (canto.id === "Truco") {

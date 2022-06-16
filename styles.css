@@ -13,7 +13,7 @@ body {
 
 body {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   background-color: azure;
 }
@@ -184,7 +184,7 @@ body {
 
 #mensaje {
   position: absolute;
-  top: 360px;
+  top: 385px;
   font-size: 30px;
   font-family: "Lilita One", cursive;
   visibility: hidden;
@@ -349,6 +349,74 @@ body {
 
 .puntoFinal {
   background: linear-gradient(135deg, transparent calc(50% - 3px), white 50%, transparent calc(50% + 3px));
+}
+
+#dialogue {
+  background-image: url("images/dialogue.png");
+  background-size: cover;
+  width: 160px;
+  height: 105px;
+  position: relative;
+  right: 30px;
+  top: 20px;
+  font-size: 23px;
+  font-family: "Lilita One", cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+}
+#dialogue p {
+  margin-bottom: 20px;
+}
+
+.dialogueAlerta {
+  animation-name: dialogueAlert;
+  animation-duration: 0.5s;
+}
+
+@keyframes dialogueAlert {
+  0% {
+    transform: scale(0);
+    visibility: visible;
+  }
+  5% {
+    transform: scale(0.1);
+    visibility: visible;
+  }
+  10% {
+    transform: scale(0.2);
+    visibility: visible;
+  }
+  15% {
+    transform: scale(0.3);
+    visibility: visible;
+  }
+  20% {
+    transform: scale(0.4);
+    visibility: visible;
+  }
+  25% {
+    transform: scale(0.5);
+    visibility: visible;
+  }
+  30% {
+    transform: scale(0.6);
+    visibility: visible;
+  }
+  35% {
+    transform: scale(0.7);
+    visibility: visible;
+  }
+  40% {
+    transform: scale(0.8);
+    visibility: visible;
+  }
+  45% {
+    transform: scale(0.9);
+    visibility: visible;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

@@ -81,7 +81,7 @@ body {
 
 body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     background-color: azure;
 }
@@ -171,7 +171,7 @@ body {
 
 #mensaje {
     position: absolute;
-    top: 360px;
+    top: 385px;
     font-size: 30px;
     font-family: $fontMensaje;
     visibility: hidden;
@@ -272,4 +272,40 @@ body {
 
 .puntoFinal {
     background: linear-gradient(135deg, transparent calc(50% - 3px), white 50%, transparent calc(50% + 3px));
+}
+
+#dialogue{
+    background-image: url("images/dialogue.png");
+    background-size: cover;
+    width: 160px;
+    height: 105px;
+    position: relative;
+    right: 30px;
+    top: 20px;
+    font-size: 23px;
+    font-family: $fontMensaje;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    p{
+        margin-bottom: 20px;
+    }
+    visibility: hidden;
+}
+
+.dialogueAlerta {
+    animation-name: dialogueAlert;
+    animation-duration: 0.5s;
+}
+
+@keyframes dialogueAlert {
+    @for $i from 0 to 10 {
+        #{(0% + 5*$i)} {
+            transform: scale($i*0.1);
+            visibility: visible
+        }
+
+        ;
+    }
 }
