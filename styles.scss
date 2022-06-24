@@ -84,19 +84,21 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: azure;
+    justify-content: center;
 }
 
 .game {
     border: 5px solid black;
     border-radius: 15px;
-    height: 80%;
+    height: 85%;
     width: 70%;
     display: grid;
     grid-template-areas:
-        "mesa contador"
+        "dialogue contador"
+        "mesa tablero"
         "mesa tablero";
     grid-template-columns: 4fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 15% 75% 10%;
     background-color: $colorFondo;
     ;
 }
@@ -113,12 +115,11 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-items: center;
 }
 
 .manoJugador {
     @include centrarElementoGame;
-    top: -205px;
+    top: -245px;
     transform: scale(0.95);
 }
 
@@ -234,7 +235,7 @@ body {
     border-radius: 10px;
     background-color: $colorContador;
     width: 60%;
-    height: 90%;
+    height: 265px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -275,12 +276,13 @@ body {
 }
 
 #dialogue{
+    grid-area: dialogue;
     background-image: url("images/dialogue.png");
     background-size: cover;
     width: 160px;
     height: 105px;
     position: relative;
-    right: 30px;
+    right: -450px;
     top: 20px;
     font-size: 23px;
     font-family: $fontMensaje;
@@ -308,4 +310,13 @@ body {
 
         ;
     }
+}
+
+.menuPrincipal {
+    border: 5px solid black;
+    border-radius: 15px;
+    height: 80%;
+    width: 70%;
+    background-color: $colorFondo;
+    ;
 }

@@ -122,9 +122,9 @@ class Interfaz {
 
     //Mostrar canto
     async dialogue(mensaje, jugador) {
-        let posicionDialogue = "20px";
+        let posicionDialogue = "10px";
         if (jugador==="Jugador")
-            posicionDialogue = "450px";
+            posicionDialogue = "360px";
         document.getElementById("dialogue").style.top = posicionDialogue;
         document.getElementById("dialogueMensaje").innerText = mensaje;
         //Mostrar animación de mensaje
