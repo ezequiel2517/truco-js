@@ -2,6 +2,10 @@
 class Interfaz {
     constructor() { };
 
+    mostrarMenu(){
+        document.querySelector(".menuPrincipal").style.visibility="visible"
+    }
+
     //Desabilitar botón de canto
     deshabilitarButton(opcion) {
         let parent = document.querySelector(`#${opcion}`);
@@ -222,6 +226,8 @@ class Interfaz {
         //Cargar manos de jugadores
         this.cargarManoCPU(manoCPU.mostrarMano());
         this.cargarManoJugador(manoJugador.mostrarMano());
+
+        document.querySelector(".back").addEventListener("click", ()=>{interfaz.mostrarMenu()});
     }
 
     //Setear id cartas y mostrar - Jugador
@@ -1122,3 +1128,7 @@ let manoJugador = new Mano("Jugador");
 let manoCPU = new Mano("CPU");
 let cpu = new CPU();
 juego.reset(juego.jugadorInicia());
+
+function ocultarMenu(){
+    document.querySelector(".menuPrincipal").style.visibility="hidden"
+}
