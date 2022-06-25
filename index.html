@@ -11,14 +11,24 @@
 </head>
 
 <body>
+    <div class="partidas">
+        <div class="back">
+            <img src="images/back.png" alt="back">
+        </div>
+        <div class="icon">
+            <h1 class="tituloPartida">CARGAR PARTIDA</h1>
+        </div>
+        <ul class="partida">
+        </ul>
+    </div>
     <div class="menuPrincipal">
         <div class="icon">
             <img src="images/icon.png" alt="icono">
             <h1>TRUCO JS</h1>
         </div>
-        <ul>
-            <li onclick="ocultarMenu(this)">CONTINUAR</li>
-            <li><a href="game.html">NUEVA PARTIDA </a></li>
+        <ul class="menuOpciones">
+            <li>CONTINUAR</li>
+            <li>NUEVA PARTIDA</li>
             <li>GUARDAR PARTIDA</li>
             <li>CARGAR PARTIDA</li>
             <li><a href="https://github.com/ezequiel2517/truco-js" target="_blank">GITHUB</a></li>
@@ -26,7 +36,7 @@
     </div>
     <div class="game">
         <div class="back">
-           <img src="images/back.png" alt="back">
+            <img src="images/back.png" alt="back">
         </div>
         <div id="dialogue">
             <p id="dialogueMensaje">FALTA ENVIDO</p>
@@ -87,7 +97,15 @@
             </table>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script src="js/juego.js"></script>
+    <script src="js/interfaz.js"></script>
+    <script src="js/baraja.js"></script>
+    <script src="js/mano.js"></script>
+    <script src="js/cpu.js"></script>
+    <script src="js/functions.js"></script>
+    <script src="js/main.js"></script>
+
 </body>
 
 </html>

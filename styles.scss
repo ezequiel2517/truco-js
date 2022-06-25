@@ -276,7 +276,7 @@ body {
     background: linear-gradient(135deg, transparent calc(50% - 3px), white 50%, transparent calc(50% + 3px));
 }
 
-#dialogue{
+#dialogue {
     grid-area: dialogue;
     background-image: url("images/dialogue.png");
     background-size: cover;
@@ -291,9 +291,11 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    p{
+
+    p {
         margin-bottom: 20px;
     }
+
     visibility: hidden;
 }
 
@@ -317,7 +319,7 @@ body {
 .menuPrincipal {
     position: absolute;
     z-index: 1000;
-    background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255,255,255,0.8)), url("images/wallpaper.jpg");
+    background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url("images/wallpaper.jpg");
     background-size: cover;
     border: 5px solid black;
     border-radius: 15px;
@@ -328,40 +330,49 @@ body {
     align-items: center;
     justify-content: center;
     gap: 100px;
-    ul{
+
+    ul {
         list-style: none;
         font-size: 30px;
         font-family: 'Zilla Slab Highlight', cursive;
         color: black;
         text-align: center;
-        li{
+
+        li {
             padding-right: 10px;
             padding-left: 10px;
             cursor: pointer;
-            a{
+
+            a {
                 color: black;
                 text-decoration: none;
-                &:hover{
+
+                &:hover {
                     color: red;
                 }
             }
-            &:not(:last-child){         
+
+            &:not(:last-child) {
                 margin-bottom: 5px;
-            }           
-            &:hover{
+            }
+
+            &:hover {
                 color: red;
             }
         }
     }
 }
 
-.icon{
+.icon {
+    grid-area: titulo;
     display: flex;
     flex-direction: column;
     align-items: center;
-    img{
+
+    img {
         width: 120px;
     }
+
     h1 {
         font-size: 80px;
         font-family: $fontMensaje;
@@ -369,16 +380,69 @@ body {
     }
 }
 
-.back{
+.back {
     cursor: pointer;
     grid-area: back;
     margin-top: 10px;
     margin-left: 10px;
-    img{
+
+    img {
         width: 60px;
-        &:hover{
+
+        &:hover {
             transform: scale(1.1);
-            filter:invert(100%) brightness(50%) sepia(100) saturate(100) hue-rotate(10deg)
+            filter: invert(100%) brightness(50%) sepia(100) saturate(100) hue-rotate(10deg)
         }
     }
+}
+
+.partidas {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1001;
+    background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url("images/wallpaper.jpg");
+    background-size: cover;
+    border: 5px solid black;
+    border-radius: 15px;
+    height: 85%;
+    width: 70%;
+    display: grid;
+    grid-template-areas:
+        "back titulo titulo"
+        "partida partida partida"
+        "partida partida partida";
+    grid-template-columns: 7% 63% 30%;
+    grid-template-rows: 15% 75% 10%;
+
+    ul {
+        margin: auto;
+        width: 60%;
+        list-style: none;
+        font-size: 30px;
+        font-family: 'Zilla Slab Highlight', cursive;
+        color: black;
+        text-align: center;
+
+        li {
+            padding-right: 10px;
+            padding-left: 10px;
+            margin-bottom: 5px;
+
+            a {
+                color: black;
+                text-decoration: none;
+            }
+
+
+            &:hover {
+                color: red;
+            }
+
+        }
+    }
+}
+
+.partida {
+    margin-top: 100px;
+    grid-area: partida;
 }
