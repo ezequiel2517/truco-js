@@ -205,7 +205,7 @@ function guardarPartida() {
     }
 }
 
-async function cargarPartida(partida){
+function cargarPartida(partida){
     juego = new Juego();
     const p = JSON.parse(localStorage.getItem(partida.target.id));
     juego.cargarPartida(p.manoCPU, p.manoJugador, p.juego);

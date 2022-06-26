@@ -43,6 +43,7 @@ class Juego {
         this.turno = jugador;
         this.flor = false;
         this.cantoEnvido = false;
+        interfaz.limpiarTablero();
         this.iniciarPartida();
     }
 
