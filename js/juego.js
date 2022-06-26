@@ -1,14 +1,14 @@
-//Clase encargada de reglas de juego 
+//Clase encargada de las reglas de juego, llevar partida (iniciar, guardar y cargar) y decidir duelos entre jugadores 
 class Juego {
     constructor() {
         this.flor = false;
         this.cantoEnvido = false;
         this.puntosTruco = 1;
         this.turnoTruco = "";
-        this.turno = this.jugadorInicia();
         this.partidaGral = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
         this.partida = [{ Jugador: "Jugador", Puntos: 0 }, { Jugador: "CPU", Puntos: 0 }];
         this.envido = [];
+        this.turno = this.jugadorInicia();
         this.jerarquia =
             [
                 { Num: 1, Palo: "Espada", Posc: 1 },
@@ -28,7 +28,7 @@ class Juego {
             ];
     }
 
-    //Reset del juego
+    //Reset del juego (se termina un duelo e inicia otro)
     reset(jugador) {
         barajaJuego = new Baraja();
         manoJugador = new Mano("Jugador");
@@ -46,28 +46,28 @@ class Juego {
         this.iniciarPartida();
     }
 
-    //Reset del juego
+    //Cargar partida
     cargarPartida(mCPU, mJugador, pJuego) {
         barajaJuego = new Baraja();
-
         manoJugador = new Mano("Jugador");
         manoJugador.mano = mJugador.mano;
-        for(let c of mJugador.manoJugada){
+        manoJugador.cantoTruco = mJugador.cantoTruco;
+        for (let c of mJugador.manoJugada) {
             manoJugador.mano.push(c);
         }
 
         manoCPU = new Mano("CPU");
         manoCPU.mano = mCPU.mano;
-        for(let c of mCPU.manoJugada){
+        for (let c of mCPU.manoJugada) {
             manoCPU.mano.push(c);
         }
 
         interfaz.reset();
-        
-        for (let c of mJugador.manoJugada){
+
+        for (let c of mJugador.manoJugada) {
             manoJugador.jugarCarta(c);
         }
-        for (let c of mCPU.manoJugada){
+        for (let c of mCPU.manoJugada) {
             interfaz.cargarCarta(c);
             manoCPU.jugarCarta(c, "CPU");
         }
@@ -82,6 +82,7 @@ class Juego {
         this.flor = pJuego.flor;
         this.cantoEnvido = pJuego.cantoEnvido;
         this.iniciarPartida();
+        interfaz.limpiarTablero();
         this.anotarPunto("Jugador", pJuego.partidaGral[0].Puntos);
         this.anotarPunto("CPU", pJuego.partidaGral[1].Puntos)
     }
@@ -101,11 +102,12 @@ class Juego {
         this.cantoEnvido = true;
     }
 
+    //Retorna bool para saber si se cantó envido
     getCantoEnvido() {
         return this.cantoEnvido;
     }
 
-    //Calcula puntos del envido
+    //Calcula los puntos en juego del canto Envido
     calcularPuntosEnvido() {
         let res = 0;
         for (let i = 0; i < this.envido.length; i++) {
@@ -134,12 +136,12 @@ class Juego {
         return res;
     }
 
-    //Agregar canto a array de cantos de envido
+    //Agregar canto a array de cantos de Envido
     setEnvido(canto) {
         this.envido.push(canto);
     }
 
-    //Recorre array de envidos y si hay repetidos devuelve true
+    //Recorre array de Envido y si hay repetidos devuelve true (para saber evitar cantos: ENVIDO -> ENVIDO -> ENVIDO)
     getEnvidoRepetido() {
         const res = {};
         this.envido.forEach(element => {
@@ -166,7 +168,7 @@ class Juego {
         this.puntosTruco = puntos;
     }
 
-    //Pasar turno al otro jugador
+    //Pasar canto del Truco al otro jugador (para evitar casos en que un jugador cante: TRUCO -> RETRUCO)
     pasarTurno() {
         if (this.turno === "CPU") {
             this.turno = "Jugador";
@@ -176,17 +178,17 @@ class Juego {
         }
     }
 
-    //Get jugador que lleva el canto del truco
+    //Get del jugador que lleva el canto del Truco
     getTurnoCanto() {
         return this.turnoTruco;
     }
 
-    //Get jugador que lleva el canto del truco
+    //Set del jugador que lleva el canto del Truco
     setTurnoCanto(jugador) {
         return this.turnoTruco = jugador;
     }
 
-    //Cambiar jugador que lleva la prioridad para cantar truco
+    //Cambiar jugador que lleva la prioridad para cantar Truco
     moverCantoTruco() {
         if (this.turnoTruco === "Jugador") {
             this.turnoTruco = "CPU";
@@ -196,23 +198,21 @@ class Juego {
         }
     }
 
-    //Get turno de jugador
+    //Get del jugador que lleva el canto del Truco
     getTurno() {
         return this.turno;
     }
 
-    //Get random a jugador que inicia
+    //Get random a jugador que inicia la partida
     jugadorInicia() {
+        let res = "CPU";
         if (Math.floor(Math.random() * 2) == 1) {
-            return "Jugador";
+            res = "Jugador";
         }
-        else {
-            return "CPU";
-        }
-        return "Jugador";
+        return res
     }
 
-    //Iniciar partida
+    //Iniciar nueva partida
     async iniciarPartida() {
         interfaz.deshabilitarCartas();
         interfaz.deshabilitarTablero();
@@ -238,7 +238,7 @@ class Juego {
         return this.jerarquia.filter(e => e.Num + " de " + e.Palo === carta)[0].Posc;
     }
 
-    //Return ganador y si es el fin de la partida
+    //Return ganador y si es el fin de la mano (por ejemplo: gana CPU 2 a 0)
     async duelo(cartaCPU, cartaJugador) {
         let fin = false;
         let ganador;
@@ -267,7 +267,7 @@ class Juego {
         return { fin, ganador };
     }
 
-    //Calcular envido de mano
+    //Calcular puntos del Envido para una mano
     calcularEnvido(mano) {
         let cartasEnvido = [];
         let envido = 0;
@@ -295,7 +295,7 @@ class Juego {
         return envido;
     }
 
-    //Calcular flor para mano
+    //Calcular puntos de la Flor para una mano
     calcularFlor(mano) {
         let cartasFlor = [];
         let flor = 0;

@@ -1,4 +1,4 @@
-//Lanzar carta al hacer click en button
+//Lanzar carta al hacer click en la carta de la mano
 async function lanzarCarta(carta) {
     interfaz.deshabilitarTablero();
     interfaz.deshabilitarCartas();
@@ -37,11 +37,11 @@ async function lanzarCarta(carta) {
     interfaz.habilitarTablero();
 }
 
+//Cantar Truco al hacer click en la opción
 async function cantarTruco(truco) {
     interfaz.deshabilitarCartas();
     interfaz.deshabilitarTablero();
     let canto = truco.innerHTML;
-    // await interfaz.mensaje(canto);
     await interfaz.dialogue(canto, "Jugador");
     interfaz.deshabilitarRespuesta("Truco");
     manoCPU.moverTruco(canto);
@@ -64,7 +64,6 @@ async function cantarTruco(truco) {
     juego.moverCantoTruco();
     let respuesta = await cpu.cantarTruco();
     juego.pasarTurno();
-    // await interfaz.mensaje(respuesta);
     await interfaz.dialogue(respuesta, "CPU");
     switch (respuesta) {
         case "QUIERO":
@@ -84,29 +83,25 @@ async function cantarTruco(truco) {
     interfaz.habilitarCartas();
 }
 
+//Cantar Envido al hacer click en la opción
 async function cantarEnvido(canto) {
     interfaz.deshabilitarButton("Envido");
     let cantoEnvido = canto.innerText.split("(")[0].trim();
     juego.setEnvido(cantoEnvido);
-    // await interfaz.mensaje(cantoEnvido);
     await interfaz.dialogue(cantoEnvido, "Jugador");
     let respuesta = await cpu.cantarEnvido(cantoEnvido);
-    // await interfaz.mensaje(respuesta);
     await interfaz.dialogue(respuesta, "CPU");
     if (respuesta.search("QUIERO") === -1) {
         interfaz.habilitarRespuesta("Envido", respuesta);
     }
     else if (respuesta === "QUIERO") {
-        // await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
         await interfaz.dialogue("Tengo " + manoJugador.getEnvido(), "Jugador");
-        // await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
         await interfaz.dialogue("Tengo " + manoCPU.getEnvido(), "CPU");
         let puntos = juego.calcularPuntosEnvido();
         if (manoJugador.getEnvido() > manoCPU.getEnvido())
             juego.anotarPunto("Jugador", puntos);
         else
             juego.anotarPunto("CPU", puntos);
-
     }
     else {
         let puntos = juego.calcularPuntosEnvido();
@@ -117,8 +112,9 @@ async function cantarEnvido(canto) {
     await cpu.setRespuestaEnvido();
 }
 
+
+//Cantar Flor al hacer click en la opción
 async function cantarFlor() {
-    // await interfaz.mensaje("FLOR");
     await interfaz.dialogue("FLOR", "Jugador");
     juego.anotarPunto("Jugador", 3);
     juego.setFlor();
@@ -127,8 +123,8 @@ async function cantarFlor() {
     cpu.setRespuestaEnvido();
 }
 
+//Cantar Quiero y resolver Envido o Truco
 async function quiero(opcion) {
-    // await interfaz.mensaje("QUIERO");
     await interfaz.dialogue("QUIERO", "Jugador")
     let opcionEspera = opcion.parentElement.id;
     switch (opcion.parentElement.id) {
@@ -148,9 +144,7 @@ async function quiero(opcion) {
             }
             break;
         case "Envido":
-            // await interfaz.mensaje("Jugador :" + manoJugador.getEnvido());
             await interfaz.dialogue("Tengo " + manoJugador.getEnvido(), "Jugador");
-            // await interfaz.mensaje("CPU: " + manoCPU.getEnvido());
             await interfaz.dialogue("Tengo " + manoCPU.getEnvido(), "CPU");
             let puntos = juego.calcularPuntosEnvido();
             if (manoJugador.getEnvido() > manoCPU.getEnvido())
@@ -168,8 +162,8 @@ async function quiero(opcion) {
         await cpu.setRespuestaEnvido();
 }
 
+//Cantar No Quiero y resolver Envido o Truco
 async function noQuiero(opcion) {
-    // await interfaz.mensaje("NO QUIERO");
     await interfaz.dialogue("NO QUIERO", "Jugador");
     const canto = opcion.parentElement;
     interfaz.deshabilitarRespuesta(canto.id);
@@ -197,36 +191,6 @@ async function noQuiero(opcion) {
     }
 }
 
-function opcionGuardarPartida() {
-    interfaz.cargarPartidas("GUARDAR");
-    // const partida = {manoCPU, manoJugador, cpu, juego};
-    // let iter = Number(localStorage.getItem("iter"));
-    // if(iter){
-    //     localStorage.setItem("partida"+iter, JSON.stringify(partida));
-    //     localStorage.setItem("iter", iter+=1);
-    // }
-    // else{
-    //     localStorage.setItem("iter", 1);
-    //     localStorage.setItem("partida"+iter, JSON.stringify(partida));
-    // }
-
-}
-
-function opcionCargarPartida() {
-    interfaz.cargarPartidas("CARGAR");
-    // const partida = {manoCPU, manoJugador, cpu, juego};
-    // let iter = Number(localStorage.getItem("iter"));
-    // if(iter){
-    //     localStorage.setItem("partida"+iter, JSON.stringify(partida));
-    //     localStorage.setItem("iter", iter+=1);
-    // }
-    // else{
-    //     localStorage.setItem("iter", 1);
-    //     localStorage.setItem("partida"+iter, JSON.stringify(partida));
-    // }
-
-}
-
 function guardarPartida() {
     let hora = moment().format('YYYY-MM-DD h:mm:ss a');
     const partida = { manoCPU, manoJugador, cpu, juego, hora };
@@ -242,9 +206,7 @@ function guardarPartida() {
 }
 
 async function cargarPartida(partida){
-    console.log(manoJugador.mano);
+    juego = new Juego();
     const p = JSON.parse(localStorage.getItem(partida.target.id));
-    document.querySelector(".menuPrincipal").style.visibility = "hidden";
-    document.querySelector(".partidas").style.visibility = "hidden";
     juego.cargarPartida(p.manoCPU, p.manoJugador, p.juego);
 }

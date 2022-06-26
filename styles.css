@@ -476,16 +476,30 @@ body {
   color: black;
 }
 
-.back {
+.backGame {
   cursor: pointer;
   grid-area: back;
   margin-top: 10px;
   margin-left: 10px;
 }
-.back img {
+.backGame img {
   width: 60px;
 }
-.back img:hover {
+.backGame img:hover {
+  transform: scale(1.1);
+  filter: invert(100%) brightness(50%) sepia(100) saturate(100) hue-rotate(10deg);
+}
+
+.backPartida {
+  cursor: pointer;
+  grid-area: back;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+.backPartida img {
+  width: 60px;
+}
+.backPartida img:hover {
   transform: scale(1.1);
   filter: invert(100%) brightness(50%) sepia(100) saturate(100) hue-rotate(10deg);
 }

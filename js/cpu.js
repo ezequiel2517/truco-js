@@ -1,3 +1,4 @@
+//Clase encargada de llevar el juego de la CPU
 class CPU {
     constructor() {
         this.respuestaTruco = false;
@@ -5,7 +6,7 @@ class CPU {
         this.respuestaFin = false;
     }
 
-    //Esperar hasta que el usuario responda Truco
+    //Esperar hasta que el usuario responda al canto del Truco
     async esperarTruco() {
         return await new Promise(resolve => {
             const interval = setInterval(() => {
@@ -18,7 +19,7 @@ class CPU {
         });
     }
 
-    //Esperar hasta que el usuario responda Envido
+    //Esperar hasta que el usuario responda al canto del Truco
     async esperarEnvido() {
         return await new Promise(resolve => {
             const interval = setInterval(() => {
@@ -31,21 +32,21 @@ class CPU {
         });
     }
 
-    //Setear respuesta para espera de Truco
+    //Setear respuesta del jugador para espera de Truco
     async setRespuestaTruco() {
         this.respuestaTruco = true;
         await new Promise(r => setTimeout(r, 600));
         this.respuestaTruco = false;
     }
 
-    //Setear respuesta para espera de Envido
+    //Setear respuesta del jugador para espera de Envido
     async setRespuestaEnvido() {
         this.respuestaEnvido = true;
         await new Promise(r => setTimeout(r, 600));
         this.respuestaEnvido = false;
     }
 
-    //Evaluar/Cantar Truco
+    //Lanzar/responder los cantos del Truco
     async cantarTruco() {
         let jerarquia = 0;
         let res = "NO QUIERO";
@@ -85,7 +86,7 @@ class CPU {
         return res;
     }
 
-    //Evaluar/Cantar Envido
+    //Lanzar/responder los cantos del Envido
     async cantarEnvido(canto) {
         let res = "NO QUIERO";
         if (!juego.getFlor() && !juego.getCantoEnvido()) {
@@ -146,7 +147,6 @@ class CPU {
             let cantoEnvido = await this.cantarEnvido("ENVIDO");
             if (cantoEnvido.search("QUIERO") === -1) {
                 juego.setCantoEnvido();
-                // await interfaz.mensaje(cantoEnvido);
                 await interfaz.dialogue(cantoEnvido, "CPU");
                 interfaz.habilitarRespuesta("Envido", cantoEnvido);
                 await this.esperarEnvido();
@@ -157,7 +157,6 @@ class CPU {
         }
         let cantoTruco = await this.cantarTruco();
         if (cantoTruco.search("QUIERO") === -1) {
-            // await interfaz.mensaje(cantoTruco);
             await interfaz.dialogue(cantoTruco, "CPU");
             manoJugador.moverTruco(cantoTruco);
             interfaz.habilitarRespuesta("Truco", manoJugador.getCantoTruco());
@@ -189,7 +188,7 @@ class CPU {
         return cartaCPU;
     }
 
-    //Jugar carta aleatoria
+    //Jugar carta aleatoria (uando es el turno de la CPU)
     async jugarCarta() {
         if (manoCPU.cartasJugadas() === 0) {
             let cantoEnvido = await this.cantarEnvido("ENVIDO");

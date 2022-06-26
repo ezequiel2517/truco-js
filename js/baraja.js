@@ -5,6 +5,7 @@ class Baraja {
         this.iniciarBaraja();
         this.barajar();
     }
+    
     //Crear array de cartas
     iniciarBaraja() {
         this.baraja = [];

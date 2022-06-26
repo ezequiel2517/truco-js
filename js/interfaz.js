@@ -1,51 +1,84 @@
-//Clase encargada de interactuar con HTML
+//Clase encargada de interactuar con el DOM
 class Interfaz {
-    constructor() { };
+    constructor() {
+        const opciones = document.querySelector(".menuOpciones").children;
+        for (let opcion of opciones) {
+            switch (opcion.innerText) {
+                case "NUEVA PARTIDA":
+                    opcion.addEventListener("click", () => {
+                        document.querySelector(".menuPrincipal").style.visibility = "hidden"
+                        juego.reset(juego.jugadorInicia());
+                    });
+                    break;
+                case "CONTINUAR":
+                    opcion.addEventListener("click", () => {
+                        document.querySelector(".menuPrincipal").style.visibility = "hidden"
+                        document.querySelector(".partidas").style.visibility = "hidden"
+                    });
+                    opcion.style.display = "none";
+                    break;
+                case "GUARDAR PARTIDA":
+                    opcion.addEventListener("click", () => { this.mostrarPartidas("GUARDAR"); })
+                    opcion.style.display = "none";
+                    break;
+                case "CARGAR PARTIDA":
+                    opcion.addEventListener("click", () => { this.mostrarPartidas("CARGAR"); })
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
+    //Habilitar el menu principal del juego
     mostrarMenu() {
         document.querySelector(".menuPrincipal").style.visibility = "visible";
-        document.querySelector(".partidas").style.zIndex = 1000;
-        document.querySelector(".menuPrincipal").style.zIndex = 1001;
-
+        document.querySelector(".partidas").style.visibility = "hidden";
     }
 
-    cargarPartidas(opcion) {
-        document.querySelector(".tituloPartida").innerText=`${opcion} PARTIDA`;
+    //Mostrar el menú de cargar/guardar partidas
+    mostrarPartidas(opcion) {
+        document.querySelector(".tituloPartida").innerText = `${opcion} PARTIDA`;
         document.querySelector(".partidas").style.visibility = "visible";
-        document.querySelector(".partidas").style.zIndex = 1001;
-        document.querySelector(".menuPrincipal").style.zIndex = 1000;
-
+        document.querySelector(".menuPrincipal").style.visibility = "hidden";
+        const back = document.querySelector(".backPartida");
+        back.addEventListener("click", () => {
+            interfaz.mostrarMenu();
+        });
         const partidas = document.querySelector(".partida");
-
         while (partidas.firstChild) {
             partidas.removeChild(partidas.lastChild);
         }
-
         for (let i = 0; i < localStorage.length; i++) {
             if (localStorage.key(i) !== "iter") {
                 let p = JSON.parse(localStorage.getItem(localStorage.key(i)));
-
                 const partida = document.createElement("li");
                 partida.id = localStorage.key(i);
-                partida.innerText = `Jugador: ${p.juego.partida[0].Puntos} - CPU: ${p.juego.partida[1].Puntos} | ${p.hora}`;
-                if (opcion === "CARGAR"){                 
-                    partida.addEventListener("click", cargarPartida);
-                    partida.style.cursor="pointer";
+                partida.innerText = `Jugador: ${p.juego.partidaGral[0].Puntos} - CPU: ${p.juego.partidaGral[1].Puntos} | ${p.hora}`;
+                if (opcion === "CARGAR") {
+                    partida.addEventListener("click", (p) => {
+                        cargarPartida(p);
+                        document.querySelector(".menuPrincipal").style.visibility = "hidden";
+                        document.querySelector(".partidas").style.visibility = "hidden";
+                    });
+                    partida.style.cursor = "pointer";
                 }
-                    
                 partidas.append(partida);
             }
         }
         if (opcion === "GUARDAR") {
             const opcionGuardarPartida = document.createElement("li");
-            opcionGuardarPartida.innerText = "GUARDAR PARTIDA_";
-            opcionGuardarPartida.style.cursor="pointer";
-            opcionGuardarPartida.addEventListener("click", guardarPartida);
+            opcionGuardarPartida.innerText = "*GUARDAR PARTIDA*";
+            opcionGuardarPartida.style.cursor = "pointer";
+            opcionGuardarPartida.addEventListener("click", () => {
+                guardarPartida();
+                this.mostrarPartidas("GUARDAR");
+            });
             partidas.append(opcionGuardarPartida);
         }
     }
 
-    //Desabilitar botón de canto
+    //Desabilitar botón de canto 
     deshabilitarButton(opcion) {
         let parent = document.querySelector(`#${opcion}`);
         let button = parent.firstElementChild;
@@ -194,8 +227,9 @@ class Interfaz {
         for (let canto of opciones) {
             this.deshabilitarButton(`${canto}`);
         }
+        const back = document.querySelector(".backGame");
+        back.style.visibility = "hidden";
     }
-
 
     //Habilitar click en cartas y cantos
     habilitarCartas() {
@@ -213,6 +247,16 @@ class Interfaz {
             this.habilitarButton("Flor", "FLOR (" + manoJugador.getFlor() + ")");
         if ((juego.getTurnoCanto() === "Jugador" || juego.getTurnoCanto() === "") && manoJugador.getCantoTruco() !== "")
             this.habilitarButton("Truco", manoJugador.getCantoTruco());
+        const back = document.querySelector(".backGame");
+        back.style.visibility = "visible";
+        back.addEventListener("click", () => {
+            interfaz.mostrarMenu();
+            const opciones = document.querySelector(".menuOpciones").children;
+            for (let opcion of opciones) {
+                if (opcion.style.display === "none")
+                    opcion.style.display = "inline-block";
+            }
+        });
     }
 
     //Anotar punto en tablero
@@ -245,14 +289,13 @@ class Interfaz {
     //Reset de interfaz
     reset() {
         this.deshabilitarRespuesta("Envido");
-        //Ocultar cartas en la mesa
+        this.deshabilitarRespuesta("Truco");
         for (let carta of document.getElementsByClassName("cartaJugadorPlay")) {
             carta.style.visibility = "hidden";
         }
         for (let carta of document.getElementsByClassName("cartaCPUPlay")) {
             carta.style.visibility = "hidden";
         }
-        //Resetear cartas en las manos
         for (let carta of document.getElementsByClassName("cartaJugador")) {
             carta.style.visibility = "visible";
             carta.removeAttribute("id");
@@ -262,7 +305,6 @@ class Interfaz {
             carta.style.backgroundPositionX = "-83.3px";
             carta.style.backgroundPositionY = "-510.8px";
         }
-        //Cargar manos de jugadores
         this.cargarManoCPU(manoCPU.mostrarMano());
         this.cargarManoJugador(manoJugador.mostrarMano());
     }
@@ -289,7 +331,7 @@ class Interfaz {
         }
     }
 
-    //Mostrar carta
+    //Buscar la carta en el tablero y la carga
     cargarCarta(carta) {
         if (carta.includes("Basto")) {
             document.getElementById(carta).style.backgroundPositionY = -127.7 * 3 + "px";
@@ -318,14 +360,26 @@ class Interfaz {
             cartaJugador = "cartaJugadorPlay"
             posicionCarta = manoJugador.cartasJugadas() - 1;
         }
-        //Ocultar carta en mano
         document.getElementById(carta).style.visibility = "hidden";
-        //Mostrar carta en mesa
         document.getElementsByClassName(cartaJugador)[posicionCarta].style.cssText = document.getElementById(carta).style.cssText;
         document.getElementsByClassName(cartaJugador)[posicionCarta].style.visibility = "visible";
     }
 
-    getRespuesta() {
-        return document.getElementById("buttonRespuesta").innerText;
+    //Borrar puntos del tablero
+    limpiarTablero() {
+        const puntosCPU = document.querySelector("#partidaCPU");
+        while (puntosCPU.childElementCount > 0) {
+            puntosCPU.removeChild(puntosCPU.lastElementChild);
+        }
+        const puntosJugador = document.querySelector("#partidaJugador");
+        while (puntosJugador.childElementCount > 0) {
+            puntosJugador.removeChild(puntosJugador.lastElementChild);
+        }
+        const puntoJugadorNew = document.createElement("li");
+        puntoJugadorNew.classList.add("puntoJugador");
+        puntosJugador.appendChild(puntoJugadorNew);
+        const puntoCPUNew = document.createElement("li");
+        puntoCPUNew.classList.add("puntoCPU");
+        puntosCPU.appendChild(puntoCPUNew);
     }
 }
