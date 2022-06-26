@@ -211,6 +211,6 @@ function cargarPartida(p){
 //Borrar la partida seleccionada desde localStorage
 function borrarPartida(p){
     let partidas = JSON.parse(localStorage.getItem("partidas"));
-    partidas = partidas.filter(e => e!==partidas[p]);
-    localStorage.setItem("partidas", JSON.stringify(partidas));
+    const res = partidas.filter(e => e!==partidas[p]);
+    localStorage.setItem("partidas", JSON.stringify(res));
 }

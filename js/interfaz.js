@@ -391,7 +391,8 @@ class Interfaz {
 
     //Cargar datos de la partida en el popup y mostrar
     mostrarPopupPartida(p) {
-        let iPartida = p.replace(/[^0-9]/g, '');
+        let iPartida = Number(p.replace(/[^0-9]/g, ''));
+        console.log(p)
         const partida = JSON.parse(localStorage.getItem("partidas"))[iPartida];
         const popupMensaje = document.querySelector("#popupPartidaMensaje");
         const popup = document.querySelector("#popupPartida");
@@ -404,8 +405,14 @@ class Interfaz {
             popup.style.visibility = "hidden";
             popupMensaje.style.visibility = "hidden";
         })
-        const borrar = document.querySelector("#buttonBorrar");
-        const cargar = document.querySelector("#buttonCargar");
+        const opciones = document.querySelector("#opcionesPopup");
+        while (opciones.firstChild) {
+            opciones.removeChild(opciones.lastChild);
+        }
+        const borrar = document.createElement("button");
+        borrar.innerText="BORRAR";
+        const cargar = document.createElement("button");
+        cargar.innerText="CARGAR";
         cargar.addEventListener("click", () => {
             cargarPartida(partida);
             popup.style.visibility = "hidden";
@@ -419,6 +426,8 @@ class Interfaz {
             popupMensaje.style.visibility = "hidden";
             interfaz.mostrarPartidas("CARGAR");
         })
+        opciones.append(cargar);
+        opciones.append(borrar);
         popup.style.visibility = "visible";
         popupMensaje.style.visibility = "visible";
     }
