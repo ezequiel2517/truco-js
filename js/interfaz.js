@@ -6,14 +6,15 @@ class Interfaz {
             switch (opcion.innerText) {
                 case "NUEVA PARTIDA":
                     opcion.addEventListener("click", () => {
-                        document.querySelector(".menuPrincipal").style.visibility = "hidden"
+                        document.querySelector(".menuPrincipal").style.visibility = "hidden";
+                        this.limpiarTablero();
                         juego.reset(juego.jugadorInicia());
                     });
                     break;
                 case "CONTINUAR":
                     opcion.addEventListener("click", () => {
-                        document.querySelector(".menuPrincipal").style.visibility = "hidden"
-                        document.querySelector(".partidas").style.visibility = "hidden"
+                        document.querySelector(".menuPrincipal").style.visibility = "hidden";
+                        document.querySelector(".partidas").style.visibility = "hidden";
                     });
                     opcion.style.display = "none";
                     break;
@@ -22,7 +23,9 @@ class Interfaz {
                     opcion.style.display = "none";
                     break;
                 case "CARGAR PARTIDA":
-                    opcion.addEventListener("click", () => { this.mostrarPartidas("CARGAR"); })
+                    opcion.addEventListener("click", () => {
+                        this.mostrarPartidas("CARGAR");
+                    })
                     break;
                 default:
                     break;
@@ -49,17 +52,16 @@ class Interfaz {
         while (partidas.firstChild) {
             partidas.removeChild(partidas.lastChild);
         }
-        for (let i = 0; i < localStorage.length; i++) {
-            if (localStorage.key(i) !== "iter") {
-                let p = JSON.parse(localStorage.getItem(localStorage.key(i)));
+        const partidasLocal = JSON.parse(localStorage.getItem("partidas"));
+        if (partidasLocal) {
+            for (let i = 0; i < partidasLocal.length; i++) {
+                let p = partidasLocal[i];
                 const partida = document.createElement("li");
-                partida.id = localStorage.key(i);
+                partida.id = `partida${i}`;
                 partida.innerText = `Jugador: ${p.juego.partidaGral[0].Puntos} - CPU: ${p.juego.partidaGral[1].Puntos} | ${p.hora}`;
                 if (opcion === "CARGAR") {
                     partida.addEventListener("click", (p) => {
-                        cargarPartida(p);
-                        document.querySelector(".menuPrincipal").style.visibility = "hidden";
-                        document.querySelector(".partidas").style.visibility = "hidden";
+                        this.mostrarPopupPartida(p.target.id);
                     });
                     partida.style.cursor = "pointer";
                 }
@@ -247,16 +249,6 @@ class Interfaz {
             this.habilitarButton("Flor", "FLOR (" + manoJugador.getFlor() + ")");
         if ((juego.getTurnoCanto() === "Jugador" || juego.getTurnoCanto() === "") && manoJugador.getCantoTruco() !== "")
             this.habilitarButton("Truco", manoJugador.getCantoTruco());
-        const back = document.querySelector(".backGame");
-        back.style.visibility = "visible";
-        back.addEventListener("click", () => {
-            interfaz.mostrarMenu();
-            const opciones = document.querySelector(".menuOpciones").children;
-            for (let opcion of opciones) {
-                if (opcion.style.display === "none")
-                    opcion.style.display = "inline-block";
-            }
-        });
     }
 
     //Anotar punto en tablero
@@ -381,5 +373,53 @@ class Interfaz {
         const puntoCPUNew = document.createElement("li");
         puntoCPUNew.classList.add("puntoCPU");
         puntosCPU.appendChild(puntoCPUNew);
+    }
+
+    //Habilitar el button para regresar al menú
+    habilitarBack() {
+        const back = document.querySelector(".backGame");
+        back.style.visibility = "visible";
+        back.addEventListener("click", () => {
+            interfaz.mostrarMenu();
+            const opciones = document.querySelector(".menuOpciones").children;
+            for (let opcion of opciones) {
+                if (opcion.style.display === "none")
+                    opcion.style.display = "inline-block";
+            }
+        });
+    }
+
+    //Cargar datos de la partida en el popup y mostrar
+    mostrarPopupPartida(p) {
+        let iPartida = p.replace(/[^0-9]/g, '');
+        const partida = JSON.parse(localStorage.getItem("partidas"))[iPartida];
+        const popupMensaje = document.querySelector("#popupPartidaMensaje");
+        const popup = document.querySelector("#popupPartida");
+        const titulo = document.querySelector("#tituloPartida");
+        titulo.innerText = `Jugador: ${partida.juego.partidaGral[0].Puntos} - CPU: ${partida.juego.partidaGral[1].Puntos} | ${partida.hora}`;
+        popupMensaje.addEventListener("click", (e) => {
+            e.stopPropagation();
+        })
+        popup.addEventListener("click", () => {
+            popup.style.visibility = "hidden";
+            popupMensaje.style.visibility = "hidden";
+        })
+        const borrar = document.querySelector("#buttonBorrar");
+        const cargar = document.querySelector("#buttonCargar");
+        cargar.addEventListener("click", () => {
+            cargarPartida(partida);
+            popup.style.visibility = "hidden";
+            popupMensaje.style.visibility = "hidden";
+            document.querySelector(".menuPrincipal").style.visibility = "hidden";
+            document.querySelector(".partidas").style.visibility = "hidden";
+        })
+        borrar.addEventListener("click", () => {
+            borrarPartida(iPartida);
+            popup.style.visibility = "hidden";
+            popupMensaje.style.visibility = "hidden";
+            interfaz.mostrarPartidas("CARGAR");
+        })
+        popup.style.visibility = "visible";
+        popupMensaje.style.visibility = "visible";
     }
 }

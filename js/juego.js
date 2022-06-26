@@ -26,6 +26,8 @@ class Juego {
                 { Num: 5, Palo: "Oro", Posc: 13 }, { Num: 5, Palo: "Espada", Posc: 13 }, { Num: 5, Palo: "Copa", Posc: 13 }, { Num: 5, Palo: "Basto", Posc: 13 },
                 { Num: 4, Palo: "Oro", Posc: 14 }, { Num: 4, Palo: "Espada", Posc: 14 }, { Num: 4, Palo: "Copa", Posc: 14 }, { Num: 4, Palo: "Basto", Posc: 14 },
             ];
+        if (!localStorage.getItem("partidas"))
+            localStorage.setItem("partidas", JSON.stringify([]));
     }
 
     //Reset del juego (se termina un duelo e inicia otro)
@@ -43,7 +45,6 @@ class Juego {
         this.turno = jugador;
         this.flor = false;
         this.cantoEnvido = false;
-        interfaz.limpiarTablero();
         this.iniciarPartida();
     }
 
@@ -222,6 +223,7 @@ class Juego {
             juego.pasarTurno()
         }
         await interfaz.mensaje("TE TOCA");
+        interfaz.habilitarBack();
         interfaz.habilitarCartas();
         interfaz.habilitarTablero();
     }

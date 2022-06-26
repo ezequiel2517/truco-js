@@ -16,6 +16,7 @@ async function lanzarCarta(carta) {
                 await new Promise(r => setTimeout(r, 1000));
                 juego.pasarTurno();
                 await interfaz.mensaje("TE TOCA");
+                interfaz.habilitarBack();
             }
         }
         else if (manoCPU.cartasJugadas() === manoJugador.cartasJugadas()) {
@@ -27,6 +28,7 @@ async function lanzarCarta(carta) {
                 await new Promise(r => setTimeout(r, 1000));
                 juego.pasarTurno();
                 await interfaz.mensaje("TE TOCA");
+                interfaz.habilitarBack();
             }
         }
     }
@@ -191,22 +193,24 @@ async function noQuiero(opcion) {
     }
 }
 
+//Guardar la partida en curso
 function guardarPartida() {
     let hora = moment().format('YYYY-MM-DD h:mm:ss a');
     const partida = { manoCPU, manoJugador, cpu, juego, hora };
-    let iter = Number(localStorage.getItem("iter"));
-    if (iter) {
-        localStorage.setItem("partida" + iter, JSON.stringify(partida));
-        localStorage.setItem("iter", iter += 1);
-    }
-    else {
-        localStorage.setItem("iter", 1);
-        localStorage.setItem("partida" + iter, JSON.stringify(partida));
-    }
+    const partidas = JSON.parse(localStorage.getItem("partidas"));
+    partidas.push(partida);
+    localStorage.setItem("partidas", JSON.stringify(partidas));
 }
 
-function cargarPartida(partida){
+//Cargar la partida seleccionada desde localStorage
+function cargarPartida(p){
     juego = new Juego();
-    const p = JSON.parse(localStorage.getItem(partida.target.id));
     juego.cargarPartida(p.manoCPU, p.manoJugador, p.juego);
+}
+
+//Borrar la partida seleccionada desde localStorage
+function borrarPartida(p){
+    let partidas = JSON.parse(localStorage.getItem("partidas"));
+    partidas = partidas.filter(e => e!==partidas[p]);
+    localStorage.setItem("partidas", JSON.stringify(partidas));
 }

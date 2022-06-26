@@ -21,7 +21,7 @@ body {
 }
 
 .game {
-  border: 5px solid black;
+  border: 2px solid gray;
   border-radius: 15px;
   height: 85%;
   width: 70%;
@@ -425,7 +425,7 @@ body {
   z-index: 1000;
   background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url("images/wallpaper.jpg");
   background-size: cover;
-  border: 5px solid black;
+  border: 2px solid gray;
   border-radius: 15px;
   height: 85%;
   width: 70%;
@@ -510,7 +510,7 @@ body {
   z-index: 1001;
   background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url("images/wallpaper.jpg");
   background-size: cover;
-  border: 5px solid black;
+  border: 2px solid gray;
   border-radius: 15px;
   height: 85%;
   width: 70%;
@@ -544,6 +544,50 @@ body {
 .partida {
   margin-top: 100px;
   grid-area: partida;
+}
+
+#popupPartida {
+  visibility: hidden;
+  position: absolute;
+  height: 85%;
+  width: 70%;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#popupPartida #popupPartidaMensaje {
+  padding: 5px;
+  position: absolute;
+  z-index: 2000;
+  background-color: white;
+  height: max-content;
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 30px;
+  font-family: "Zilla Slab Highlight", cursive;
+  color: black;
+  gap: 15px;
+  border-radius: 5px;
+}
+#popupPartida #popupPartidaMensaje button {
+  font-size: 30px;
+  font-family: "Zilla Slab Highlight", cursive;
+  color: black;
+  border: 0px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#opcionesPopup {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
 }
 
 /*# sourceMappingURL=styles.css.map */
