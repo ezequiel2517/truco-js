@@ -99,11 +99,8 @@ class Interfaz {
             button.innerText = texto;
             let opcionTablero = document.querySelector(`#${opcion}`);
             button.onclick = function () {
-                if (button.innerText === "ENVIDO +")
-                    button.innerText = "ENVIDO -";
-
-                else
-                    button.innerText = "ENVIDO +";
+                (button.innerText.includes("+")) ?
+                    button.innerText = button.innerText.replace("+", "-") : button.innerText = button.innerText.replace("-", "+");
                 if (document.querySelector("#" + this.parentElement.id).firstElementChild.style.display !== "inline")
                     for (let b of document.querySelector("#" + this.parentElement.id).children) {
                         b.style.display = "inline";
@@ -168,8 +165,7 @@ class Interfaz {
             let envido = document.querySelector("#Envido").lastElementChild;
             envido.innerText = "ENVIDO (" + manoJugador.getEnvido() + ")";
             let ordenEnvido = ["ENVIDO", "ENVIDO", "REAL ENVIDO", "FALTA ENVIDO"];
-            if (juego.getEnvidoRepetido())
-                ordenEnvido.shift();
+            juego.getEnvidoRepetido() && ordenEnvido.shift();
             let comienzo = ordenEnvido.indexOf(respuesta);
             for (let i = comienzo + 1; i < ordenEnvido.length; i++) {
                 let buttonRespuesta = document.createElement("li");
@@ -192,7 +188,6 @@ class Interfaz {
     //Mostrar mensaje
     async mensaje(mensaje) {
         document.getElementById("mensaje").innerText = mensaje;
-        //Mostrar animación de mensaje
         document.getElementById("mensaje").classList.add("mensajeAlerta");
         await new Promise(r => setTimeout(r, 500));
         document.getElementById("mensaje").classList.remove("mensajeAlerta");
@@ -200,12 +195,9 @@ class Interfaz {
 
     //Mostrar canto
     async dialogue(mensaje, jugador) {
-        let posicionDialogue = "10px";
-        if (jugador === "Jugador")
-            posicionDialogue = "360px";
+        let posicionDialogue = (jugador === "Jugador") ? "360px" : "10px";
         document.getElementById("dialogue").style.top = posicionDialogue;
         document.getElementById("dialogueMensaje").innerText = mensaje;
-        //Mostrar animación de mensaje
         document.getElementById("dialogue").classList.add("dialogueAlerta");
         await new Promise(r => setTimeout(r, 500));
         document.getElementById("dialogue").classList.remove("dialogueAlerta");
@@ -242,13 +234,12 @@ class Interfaz {
 
     //Habilitar tablero de cantos
     habilitarTablero() {
-        if (manoJugador.cartasJugadas() === 0 && juego.getPuntosTruco() === 1 && !juego.getCantoEnvido()) {
-            this.habilitarButton("Envido", "ENVIDO (" + manoJugador.getEnvido() + ") +");
-        }
-        if (manoJugador.flor !== 0 && !juego.getFlor() && manoJugador.cartasJugadas() === 0)
-            this.habilitarButton("Flor", "FLOR (" + manoJugador.getFlor() + ")");
-        if ((juego.getTurnoCanto() === "Jugador" || juego.getTurnoCanto() === "") && manoJugador.getCantoTruco() !== "")
-            this.habilitarButton("Truco", manoJugador.getCantoTruco());
+        (manoJugador.cartasJugadas() === 0 && juego.getPuntosTruco() === 1 && !juego.getCantoEnvido())
+            && this.habilitarButton("Envido", "ENVIDO (" + manoJugador.getEnvido() + ") +");
+        (manoJugador.flor !== 0 && !juego.getFlor() && manoJugador.cartasJugadas() === 0)
+            && this.habilitarButton("Flor", "FLOR (" + manoJugador.getFlor() + ")");
+        ((juego.getTurnoCanto() === "Jugador" || juego.getTurnoCanto() === "") && manoJugador.getCantoTruco() !== "")
+            && this.habilitarButton("Truco", manoJugador.getCantoTruco());
     }
 
     //Anotar punto en tablero
@@ -410,9 +401,9 @@ class Interfaz {
             opciones.removeChild(opciones.lastChild);
         }
         const borrar = document.createElement("button");
-        borrar.innerText="BORRAR";
+        borrar.innerText = "BORRAR";
         const cargar = document.createElement("button");
-        cargar.innerText="CARGAR";
+        cargar.innerText = "CARGAR";
         cargar.addEventListener("click", () => {
             cargarPartida(partida);
             popup.style.visibility = "hidden";

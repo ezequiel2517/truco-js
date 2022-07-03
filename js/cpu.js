@@ -53,10 +53,7 @@ class CPU {
         for (let carta of manoCPU.mostrarMano()) {
             jerarquia += juego.jerarquiaCarta(carta);
         }
-        let subir = false;
-        if (Math.floor(Math.random() * 3) >= 1) {
-            subir = true;
-        }
+        let subir = (Math.floor(Math.random() * 3) >= 1) ? true : false;
         let jerarquiaMano = jerarquia / (3 - manoCPU.cartasJugadas());
         let miTurno = juego.getTurnoCanto();
         if ((miTurno === "CPU" || miTurno === "") && jerarquiaMano <= 15) {
@@ -91,10 +88,7 @@ class CPU {
         let res = "NO QUIERO";
         if (!juego.getFlor() && !juego.getCantoEnvido()) {
             let envido = manoCPU.getEnvido();
-            let subir = false;
-            if (Math.floor(Math.random() * 3) >= 1) {
-                subir = true;
-            }
+            let subir = (Math.floor(Math.random() * 3) >= 1) ? true : false;
             if (subir) {
                 switch (canto) {
                     case "ENVIDO":
@@ -107,12 +101,10 @@ class CPU {
                         }
                         break;
                     case "REAL ENVIDO":
-                        if (envido >= 24)
-                            res = "FALTA ENVIDO";
+                            res = envido >= 24 && "FALTA ENVIDO";
                         break;
                     case "FALTA ENVIDO":
-                        if (envido >= 27)
-                            res = "QUIERO";
+                            res = envido >= 27 && "QUIERO";
                         break;
                     default:
                         break;
@@ -121,22 +113,20 @@ class CPU {
             else {
                 switch (canto) {
                     case "ENVIDO":
-                        if (envido >= 20)
-                            res = "QUIERO"
+                            res = envido >= 20 && "QUIERO";
                         break;
                     case "REAL ENVIDO":
-                        if (envido >= 24)
-                            res = "QUIERO"
+                            res = envido >= 24 && "QUIERO";
                         break;
                     case "FALTA ENVIDO":
-                        if (envido >= 27)
-                            res = "QUIERO";
+                            res = envido >= 27 && "QUIERO";
                         break;
                     default:
                         break;
                 }
             }
         }
+        res = (res!==false) ? res : "NO QUIERO";
         juego.setEnvido(res);
         return res;
     }

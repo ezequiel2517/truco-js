@@ -26,8 +26,7 @@ class Juego {
                 { Num: 5, Palo: "Oro", Posc: 13 }, { Num: 5, Palo: "Espada", Posc: 13 }, { Num: 5, Palo: "Copa", Posc: 13 }, { Num: 5, Palo: "Basto", Posc: 13 },
                 { Num: 4, Palo: "Oro", Posc: 14 }, { Num: 4, Palo: "Espada", Posc: 14 }, { Num: 4, Palo: "Copa", Posc: 14 }, { Num: 4, Palo: "Basto", Posc: 14 },
             ];
-        if (!localStorage.getItem("partidas"))
-            localStorage.setItem("partidas", JSON.stringify([]));
+        (!localStorage.getItem("partidas")) && localStorage.setItem("partidas", JSON.stringify([]));
     }
 
     //Reset del juego (se termina un duelo e inicia otro)
@@ -154,10 +153,7 @@ class Juego {
 
     //Retorna el puntaje del jugador que va ganando
     getPuntosGanando() {
-        let res = this.partidaGral[0].Puntos;
-        if (this.partidaGral[1].Puntos > res)
-            res = this.partidaGral[1].Puntos;
-        return res;
+        return (this.partidaGral[1].Puntos > res) ? this.partidaGral[1].Puntos : this.partidaGral[0].Puntos;
     }
 
     //Retorna los puntos del truco en juego
@@ -172,12 +168,7 @@ class Juego {
 
     //Pasar canto del Truco al otro jugador (para evitar casos en que un jugador cante: TRUCO -> RETRUCO)
     pasarTurno() {
-        if (this.turno === "CPU") {
-            this.turno = "Jugador";
-        }
-        else {
-            this.turno = "CPU";
-        }
+        (this.turno === "CPU") ? this.turno = "Jugador" : this.turno = "CPU";
     }
 
     //Get del jugador que lleva el canto del Truco
@@ -192,12 +183,8 @@ class Juego {
 
     //Cambiar jugador que lleva la prioridad para cantar Truco
     moverCantoTruco() {
-        if (this.turnoTruco === "Jugador") {
-            this.turnoTruco = "CPU";
-        }
-        else {
-            this.turnoTruco = "Jugador";
-        }
+        (this.turnoTruco === "Jugador") ? this.turnoTruco = "CPU" : this.turnoTruco = "Jugador";
+
     }
 
     //Get del jugador que lleva el canto del Truco
@@ -207,11 +194,7 @@ class Juego {
 
     //Get random a jugador que inicia la partida
     jugadorInicia() {
-        let res = "CPU";
-        if (Math.floor(Math.random() * 2) == 1) {
-            res = "Jugador";
-        }
-        return res
+        return (Math.floor(Math.random() * 2) == 1) ? "Jugador" : "CPU";
     }
 
     //Iniciar nueva partida
@@ -302,19 +285,13 @@ class Juego {
     calcularFlor(mano) {
         let cartasFlor = [];
         let flor = 0;
-        let val1 = 0;
-        let val2 = 0;
-        let val3 = 0;
         for (let i = 0; i < 3; i++) {
             cartasFlor.push(juego.jerarquia.filter(e => e.Num + " de " + e.Palo === mano[i]));
         }
         if (cartasFlor[0][0].Palo == cartasFlor[1][0].Palo && cartasFlor[1][0].Palo == cartasFlor[2][0].Palo) {
-            if (cartasFlor[0][0].Num < 10)
-                val1 = cartasFlor[0][0].Num;
-            if (cartasFlor[1][0].Num < 10)
-                val2 = cartasFlor[1][0].Num;
-            if (cartasFlor[2][0].Num < 10)
-                val3 = cartasFlor[2][0].Num;
+            let val1 = (cartasFlor[0][0].Num < 10) ? cartasFlor[0][0].Num : 0;
+            let val2 = (cartasFlor[1][0].Num < 10) ? cartasFlor[1][0].Num : 0;
+            let val3 = (cartasFlor[2][0].Num < 10) ? cartasFlor[2][0].Num : 0;
             flor = 20 + val1 + val2 + val3;
         }
         return flor

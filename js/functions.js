@@ -1,16 +1,14 @@
 //Lanzar carta al hacer click en la carta de la mano
-async function lanzarCarta(carta) {
+async function lanzarCarta({ id: carta }) {
     interfaz.deshabilitarTablero();
     interfaz.deshabilitarCartas();
-    manoJugador.jugarCarta(carta.id, "Jugador");
+    manoJugador.jugarCarta(carta, "Jugador");
     juego.pasarTurno();
     if (manoCPU.cartasJugadas() !== 3) {
         if (manoCPU.cartasJugadas() < manoJugador.cartasJugadas()) {
-            let res = await juego.duelo(await cpu.responderCarta(carta.id), carta.id);
+            let res = await juego.duelo(await cpu.responderCarta(carta), carta);
             if (res.ganador === "CPU" && !res.fin) {
-                if (manoCPU.cartasJugadas() !== 3) {
-                    await cpu.jugarCarta();
-                }
+                (manoCPU.cartasJugadas() !== 3) && await cpu.jugarCarta();
             }
             if (!res.fin) {
                 await new Promise(r => setTimeout(r, 1000));
@@ -22,9 +20,7 @@ async function lanzarCarta(carta) {
         else if (manoCPU.cartasJugadas() === manoJugador.cartasJugadas()) {
             let res = await juego.duelo(manoCPU.getUltimaCartaJugada(), manoJugador.getUltimaCartaJugada());
             if (!res.fin) {
-                if (res.ganador == "CPU") {
-                    await cpu.jugarCarta();
-                }
+                (res.ganador === "CPU") && await cpu.jugarCarta();
                 await new Promise(r => setTimeout(r, 1000));
                 juego.pasarTurno();
                 await interfaz.mensaje("TE TOCA");
@@ -33,22 +29,21 @@ async function lanzarCarta(carta) {
         }
     }
     else {
-        await juego.duelo(manoCPU.getUltimaCartaJugada(), carta.id)
+        await juego.duelo(manoCPU.getUltimaCartaJugada(), carta)
     }
     interfaz.habilitarCartas();
     interfaz.habilitarTablero();
 }
 
 //Cantar Truco al hacer click en la opción
-async function cantarTruco(truco) {
+async function cantarTruco({ innerHTML: canto }) {
     interfaz.deshabilitarCartas();
     interfaz.deshabilitarTablero();
-    let canto = truco.innerHTML;
     await interfaz.dialogue(canto, "Jugador");
     interfaz.deshabilitarRespuesta("Truco");
     manoCPU.moverTruco(canto);
     let puntos = 0;
-    switch (truco.innerText) {
+    switch (canto) {
         case "TRUCO":
             juego.setTurnoCanto("Jugador");
             puntos = 1;
@@ -69,7 +64,7 @@ async function cantarTruco(truco) {
     await interfaz.dialogue(respuesta, "CPU");
     switch (respuesta) {
         case "QUIERO":
-            juego.setPuntosTruco(puntos + 1);
+            juego.setPuntosTruco(puntos++);
             break;
         case "NO QUIERO":
             juego.anotarPunto("Jugador", puntos);
@@ -86,9 +81,9 @@ async function cantarTruco(truco) {
 }
 
 //Cantar Envido al hacer click en la opción
-async function cantarEnvido(canto) {
+async function cantarEnvido({ innerText: canto }) {
     interfaz.deshabilitarButton("Envido");
-    let cantoEnvido = canto.innerText.split("(")[0].trim();
+    let cantoEnvido = canto.split("(")[0].trim();
     juego.setEnvido(cantoEnvido);
     await interfaz.dialogue(cantoEnvido, "Jugador");
     let respuesta = await cpu.cantarEnvido(cantoEnvido);
@@ -100,10 +95,7 @@ async function cantarEnvido(canto) {
         await interfaz.dialogue("Tengo " + manoJugador.getEnvido(), "Jugador");
         await interfaz.dialogue("Tengo " + manoCPU.getEnvido(), "CPU");
         let puntos = juego.calcularPuntosEnvido();
-        if (manoJugador.getEnvido() > manoCPU.getEnvido())
-            juego.anotarPunto("Jugador", puntos);
-        else
-            juego.anotarPunto("CPU", puntos);
+        (manoJugador.getEnvido() > manoCPU.getEnvido()) ? juego.anotarPunto("Jugador", puntos) : juego.anotarPunto("CPU", puntos);
     }
     else {
         let puntos = juego.calcularPuntosEnvido();
@@ -126,10 +118,10 @@ async function cantarFlor() {
 }
 
 //Cantar Quiero y resolver Envido o Truco
-async function quiero(opcion) {
+async function quiero({ parentElement: { id: opcion } }) {
     await interfaz.dialogue("QUIERO", "Jugador")
-    let opcionEspera = opcion.parentElement.id;
-    switch (opcion.parentElement.id) {
+    let opcionEspera = opcion;
+    switch (opcion) {
         case "Truco":
             switch (manoCPU.getCantoTruco()) {
                 case "TRUCO":
@@ -149,25 +141,18 @@ async function quiero(opcion) {
             await interfaz.dialogue("Tengo " + manoJugador.getEnvido(), "Jugador");
             await interfaz.dialogue("Tengo " + manoCPU.getEnvido(), "CPU");
             let puntos = juego.calcularPuntosEnvido();
-            if (manoJugador.getEnvido() > manoCPU.getEnvido())
-                juego.anotarPunto("Jugador", puntos);
-            else
-                juego.anotarPunto("CPU", puntos);
+            (manoJugador.getEnvido() > manoCPU.getEnvido()) ? juego.anotarPunto("Jugador", puntos) : juego.anotarPunto("CPU", puntos);
             break;
         default:
             break;
     }
-    interfaz.deshabilitarRespuesta(opcion.parentElement.id);
-    if (opcionEspera === "Truco")
-        await cpu.setRespuestaTruco();
-    else
-        await cpu.setRespuestaEnvido();
+    interfaz.deshabilitarRespuesta(opcion);
+    (opcionEspera === "Truco") ? await cpu.setRespuestaTruco() : await cpu.setRespuestaEnvido();
 }
 
 //Cantar No Quiero y resolver Envido o Truco
-async function noQuiero(opcion) {
+async function noQuiero({parentElement: canto}) {
     await interfaz.dialogue("NO QUIERO", "Jugador");
-    const canto = opcion.parentElement;
     interfaz.deshabilitarRespuesta(canto.id);
     if (canto.id === "Truco") {
         switch (canto.firstElementChild.innerText) {
@@ -203,14 +188,14 @@ function guardarPartida() {
 }
 
 //Cargar la partida seleccionada desde localStorage
-function cargarPartida(p){
+function cargarPartida(p) {
     juego = new Juego();
     juego.cargarPartida(p.manoCPU, p.manoJugador, p.juego);
 }
 
 //Borrar la partida seleccionada desde localStorage
-function borrarPartida(p){
+function borrarPartida(p) {
     let partidas = JSON.parse(localStorage.getItem("partidas"));
-    const res = partidas.filter(e => e!==partidas[p]);
+    const res = partidas.filter(e => e !== partidas[p]);
     localStorage.setItem("partidas", JSON.stringify(res));
 }
