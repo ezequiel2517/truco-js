@@ -1,3 +1,5 @@
+const {DateTime} = luxon;
+
 //Lanzar carta al hacer click en la carta de la mano
 async function lanzarCarta({ id: carta }) {
     interfaz.deshabilitarTablero();
@@ -180,7 +182,7 @@ async function noQuiero({parentElement: canto}) {
 
 //Guardar la partida en curso
 function guardarPartida() {
-    let hora = moment().format('YYYY-MM-DD h:mm:ss a');
+    let hora = luxon.DateTime.now().toLocaleString(DateTime.DATETIME_SHORT)
     const partida = { manoCPU, manoJugador, cpu, juego, hora };
     const partidas = JSON.parse(localStorage.getItem("partidas"));
     partidas.push(partida);
