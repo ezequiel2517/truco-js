@@ -23,9 +23,8 @@ let cpu = new CPU();
 
 fetch('js/jararquia.json').then(response => {
     return response.json();
-  }).then(data => {
-    // Work with JSON data here
-    console.log(data);
-  }).catch(err => {
-    // Do something for an error here
-  });
+})
+    .then((resp) => resp.json())
+    .then((data) => {
+        console.log(data)
+    })
