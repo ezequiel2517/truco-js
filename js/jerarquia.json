@@ -1,0 +1,16 @@
+[
+    { "Num": 1, "Palo": "Espada", "Posc": 1 },
+    { "Num": 1, "Palo": "Basto", "Posc": 2 },
+    { "Num": 7, "Palo": "Espada", "Posc": 3 },
+    { "Num": 7, "Palo": "Oro", "Posc": 4 },
+    { "Num": 3, "Palo": "Oro", "Posc": 5 }, { "Num": 3, "Palo": "Espada", "Posc": 5 }, { "|Num": 3, "Palo": "Copa", "Posc": 5 }, { "Num": 3, "Palo": "Basto", "Posc": 5 },
+    { "Num": 2, "Palo": "Oro", "Posc": 6 }, { "Num": 2, "Palo": "Espada", "Posc": 6 }, { "|Num": 2, "Palo": "Copa", "Posc": 6 }, { "Num": 2, "Palo": "Basto", "Posc": 6 },
+    { "Num": 1, "Palo": "Copa", "Posc": 7 }, { "Num": 1, "Palo": "Oro", "Posc": 7 },
+    { "Num": 12, "Palo": "Oro", "Posc": 8 }, { "Num": 12, "Palo": "Espada", "Posc": 8 }, { "Num": 12, "Palo": "Copa", "Posc": 8 }, { "Num": 12, "Palo": "Basto", "Posc": 8 },
+    { "Num": 11, "Palo": "Oro", "Posc": 9 }, { "Num": 11, "Palo": "Espada", "Posc": 9 }, { "Num": 11, "Palo": "Copa", "Posc": 9 }, { "Num": 11, "Palo": "Basto", "Posc": 9 },
+    { "Num": 10, "Palo": "Oro", "Posc": 10 }, { "Num": 10, "Palo": "Espada", "Posc": 10 }, { "Num": 10, "Palo": "Copa", "Posc": 10 }, { "Num": 10, "Palo": "Basto", "Posc": 10 },
+    { "Num": 7, "Palo": "Copa", "Posc": 11 }, { "Num": 7, "Palo": "Basto", "Posc": 11 },
+    { "Num": 6, "Palo": "Oro", "Posc": 12 }, { "Num": 6, "Palo": "Espada", "Posc": 12 }, { "Num": 6, "Palo": "Copa", "Posc": 12 }, { "Num": 6, "Palo": "Basto", "Posc": 12 },
+    { "Num": 5, "Palo": "Oro", "Posc": 13 }, { "Num": 5, "Palo": "Espada", "Posc": 13 }, { "Num": 5, "Palo": "Copa", "Posc": 13 }, { "Num": 5, "Palo": "Basto", "Posc": 13 },
+    { "Num": 4, "Palo": "Oro", "Posc": 14 }, { "Num": 4, "Palo": "Espada", "Posc": 14 }, { "Num": 4, "Palo": "Copa", "Posc": 14 }, { "Num": 4, "Palo": "Basto", "Posc": 14 }
+]
