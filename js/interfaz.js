@@ -83,7 +83,7 @@ class Interfaz {
                 let p = partidasLocal[i];
                 const partida = document.createElement("li");
                 partida.id = `partida${i}`;
-                partida.innerText = `Jugador: ${p.juego.partidaGral[0].Puntos} - CPU: ${p.juego.partidaGral[1].Puntos} | ${p.hora}`;
+                partida.innerText = `Jugador: ${p.juego.partidaGral[0].Puntos} - ${p.oponente.Nombre}: ${p.juego.partidaGral[1].Puntos} | ${p.hora}`;
                 if (opcion === "CARGAR") {
                     partida.addEventListener("click", (p) => {
                         this.mostrarPopupPartida(p.target.id);
@@ -408,12 +408,11 @@ class Interfaz {
     //Cargar datos de la partida en el popup y mostrar
     mostrarPopupPartida(p) {
         let iPartida = Number(p.replace(/[^0-9]/g, ''));
-        console.log(p)
         const partida = JSON.parse(localStorage.getItem("partidas"))[iPartida];
         const popupMensaje = document.querySelector("#popupPartidaMensaje");
         const popup = document.querySelector("#popupPartida");
         const titulo = document.querySelector("#tituloPartida");
-        titulo.innerText = `Jugador: ${partida.juego.partidaGral[0].Puntos} - CPU: ${partida.juego.partidaGral[1].Puntos} | ${partida.hora}`;
+        titulo.innerText = `Jugador: ${partida.juego.partidaGral[0].Puntos} - ${partida.oponente.Nombre}: ${partida.juego.partidaGral[1].Puntos} | ${partida.hora}`;
         popupMensaje.addEventListener("click", (e) => {
             e.stopPropagation();
         })
