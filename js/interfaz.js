@@ -1,11 +1,13 @@
 //Clase encargada de interactuar con el DOM
 class Interfaz {
     constructor() {
+        this.perfilOponente = {Foto: "", Nombre: ""};
         const opciones = document.querySelector(".menuOpciones").children;
         for (let opcion of opciones) {
             switch (opcion.innerText) {
                 case "NUEVA PARTIDA":
-                    opcion.addEventListener("click", () => {
+                    opcion.addEventListener("click", async () => {
+                        await this.cargarOponente();
                         document.querySelector(".menuPrincipal").style.visibility = "hidden";
                         this.limpiarTablero();
                         juego.reset(juego.jugadorInicia());
@@ -32,6 +34,29 @@ class Interfaz {
             }
         }
     };
+
+    //Utilizar API RandomUser para generar oponente
+    async cargarOponente(){
+        const res = await fetch("https://randomuser.me/api/")
+        const data = await res.json();
+        const oponente = document.querySelector(".iconPlayer");
+        oponente.src = data.results[0].picture.large;
+        this.perfilOponente.Foto = data.results[0].picture.large;
+        const nameOponente = document.querySelector("#namePlayer");
+        nameOponente.innerText = data.results[0].name.first.toUpperCase();
+        this.perfilOponente.Nombre = data.results[0].name.first.toUpperCase();
+    }
+
+    getOponente(){
+        return this.perfilOponente;
+    }
+
+    cargarOponentePartida(foto, nombre){
+        const oponente = document.querySelector(".iconPlayer");
+        oponente.src = foto;
+        const nameOponente = document.querySelector("#namePlayer");
+        nameOponente.innerText = nombre;
+    }
 
     //Habilitar el menu principal del juego
     mostrarMenu() {

@@ -183,7 +183,8 @@ async function noQuiero({parentElement: canto}) {
 //Guardar la partida en curso
 function guardarPartida() {
     let hora = luxon.DateTime.now().toLocaleString(DateTime.DATETIME_SHORT)
-    const partida = { manoCPU, manoJugador, cpu, juego, hora };
+    const oponente = interfaz.getOponente();
+    const partida = { manoCPU, manoJugador, cpu, juego, hora, oponente };
     const partidas = JSON.parse(localStorage.getItem("partidas"));
     partidas.push(partida);
     localStorage.setItem("partidas", JSON.stringify(partidas));
@@ -192,7 +193,7 @@ function guardarPartida() {
 //Cargar la partida seleccionada desde localStorage
 function cargarPartida(p) {
     juego = new Juego();
-    juego.cargarPartida(p.manoCPU, p.manoJugador, p.juego);
+    juego.cargarPartida(p.manoCPU, p.manoJugador, p.juego, p.oponente);
 }
 
 //Borrar la partida seleccionada desde localStorage

@@ -48,7 +48,7 @@ class Juego {
     }
 
     //Cargar partida
-    cargarPartida(mCPU, mJugador, pJuego) {
+    cargarPartida(mCPU, mJugador, pJuego, pOponente) {
         barajaJuego = new Baraja();
         manoJugador = new Mano("Jugador");
         manoJugador.mano = mJugador.mano;
@@ -64,6 +64,7 @@ class Juego {
         }
 
         interfaz.reset();
+        interfaz.cargarOponentePartida(pOponente.Foto, pOponente.Nombre);
 
         for (let c of mJugador.manoJugada) {
             manoJugador.jugarCarta(c);
@@ -153,7 +154,7 @@ class Juego {
 
     //Retorna el puntaje del jugador que va ganando
     getPuntosGanando() {
-        return (this.partidaGral[1].Puntos > res) ? this.partidaGral[1].Puntos : this.partidaGral[0].Puntos;
+        return (this.partidaGral[1].Puntos > this.partidaGral[0].Puntos) ? this.partidaGral[1].Puntos : this.partidaGral[0].Puntos;
     }
 
     //Retorna los puntos del truco en juego
