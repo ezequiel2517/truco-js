@@ -53,7 +53,7 @@ class CPU {
         for (let carta of manoCPU.mostrarMano()) {
             jerarquia += juego.jerarquiaCarta(carta);
         }
-        let subir = (Math.floor(Math.random() * 3) >= 1) ? true : false;
+        let subir = (Math.floor(Math.random() * 10) >= 7) ? true : false;
         let jerarquiaMano = jerarquia / (3 - manoCPU.cartasJugadas());
         let miTurno = juego.getTurnoCanto();
         if ((miTurno === "CPU" || miTurno === "") && jerarquiaMano <= 15) {
@@ -88,7 +88,7 @@ class CPU {
         let res = "NO QUIERO";
         if (!juego.getFlor() && !juego.getCantoEnvido()) {
             let envido = manoCPU.getEnvido();
-            let subir = (Math.floor(Math.random() * 3) >= 1) ? true : false;
+            let subir = (Math.floor(Math.random() * 10) >= 7) ? true : false;
             if (subir) {
                 switch (canto) {
                     case "ENVIDO":

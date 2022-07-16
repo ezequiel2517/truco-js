@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Jua&family=Permanent+Marker&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Arimo:wght@500&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Zilla+Slab+Highlight&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lilita+One&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
@@ -53,13 +54,133 @@ body {
   top: -245px;
   transform: scale(0.95);
 }
+.manoJugador div:first-child:nth-last-child(3):nth-child(1),
+.manoJugador div:first-child:nth-last-child(3) ~ div:nth-child(1) {
+  transform: translateY(5px) rotate(-20deg);
+  top: 10px;
+  right: -15px;
+}
+.manoJugador div:first-child:nth-last-child(3):nth-child(3),
+.manoJugador div:first-child:nth-last-child(3) ~ div:nth-child(3) {
+  transform: translateY(5px) rotate(20deg);
+  top: 10px;
+  right: 15px;
+}
+.manoJugador div:first-child:nth-last-child(3):nth-child(1):hover,
+.manoJugador div:first-child:nth-last-child(3) ~ div:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(-15deg) scale(1.2);
+}
+.manoJugador div:first-child:nth-last-child(3):nth-child(2):hover,
+.manoJugador div:first-child:nth-last-child(3) ~ div:nth-child(2):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(0deg) scale(1.2);
+}
+.manoJugador div:first-child:nth-last-child(3):nth-child(3):hover,
+.manoJugador div:first-child:nth-last-child(3) ~ div:nth-child(3):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(15deg) scale(1.2);
+}
+.manoJugador div:first-child:nth-last-child(2):nth-child(1),
+.manoJugador div:first-child:nth-last-child(2) ~ div:nth-child(1) {
+  transform: translateY(5px) rotate(-10deg);
+  top: 10px;
+  right: 0px;
+}
+.manoJugador div:first-child:nth-last-child(2):nth-child(2),
+.manoJugador div:first-child:nth-last-child(2) ~ div:nth-child(2) {
+  transform: translateY(5px) rotate(10deg);
+  top: 10px;
+  right: 0px;
+}
+.manoJugador div:first-child:nth-last-child(2):nth-child(1):hover,
+.manoJugador div:first-child:nth-last-child(2) ~ div:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(10px) rotate(-10deg) scale(1.2);
+}
+.manoJugador div:first-child:nth-last-child(2):nth-child(2):hover,
+.manoJugador div:first-child:nth-last-child(2) ~ div:nth-child(2):hover {
+  z-index: 2;
+  transform: translate(-10px) rotate(10deg) scale(1.2);
+}
+.manoJugador div:first-child:nth-last-child(1):nth-child(1),
+.manoJugador div:first-child:nth-last-child(1) ~ div:nth-child(1) {
+  transform: translateY(5px) rotate(0deg);
+  top: 10px;
+  right: 0px;
+}
+.manoJugador div:first-child:nth-last-child(1):nth-child(1):hover,
+.manoJugador div:first-child:nth-last-child(1) ~ div:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(0px) rotate(0deg) scale(1.2);
+}
 
 .manoCPU {
   display: flex;
   position: relative;
   justify-content: center;
-  top: -205px;
+  top: -225px;
   transform: scale(0.65);
+}
+.manoCPU div:first-child:nth-last-child(3):nth-child(1),
+.manoCPU div:first-child:nth-last-child(3) ~ div:nth-child(1) {
+  transform: translateY(5px) rotate(-20deg);
+  top: 10px;
+  right: -15px;
+}
+.manoCPU div:first-child:nth-last-child(3):nth-child(3),
+.manoCPU div:first-child:nth-last-child(3) ~ div:nth-child(3) {
+  transform: translateY(5px) rotate(20deg);
+  top: 10px;
+  right: 15px;
+}
+.manoCPU div:first-child:nth-last-child(3):nth-child(1):hover,
+.manoCPU div:first-child:nth-last-child(3) ~ div:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(-15deg) scale(1.2);
+}
+.manoCPU div:first-child:nth-last-child(3):nth-child(2):hover,
+.manoCPU div:first-child:nth-last-child(3) ~ div:nth-child(2):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(0deg) scale(1.2);
+}
+.manoCPU div:first-child:nth-last-child(3):nth-child(3):hover,
+.manoCPU div:first-child:nth-last-child(3) ~ div:nth-child(3):hover {
+  z-index: 2;
+  transform: translate(-20px) rotate(15deg) scale(1.2);
+}
+.manoCPU div:first-child:nth-last-child(2):nth-child(1),
+.manoCPU div:first-child:nth-last-child(2) ~ div:nth-child(1) {
+  transform: translateY(5px) rotate(-10deg);
+  top: 10px;
+  right: 0px;
+}
+.manoCPU div:first-child:nth-last-child(2):nth-child(2),
+.manoCPU div:first-child:nth-last-child(2) ~ div:nth-child(2) {
+  transform: translateY(5px) rotate(10deg);
+  top: 10px;
+  right: 0px;
+}
+.manoCPU div:first-child:nth-last-child(2):nth-child(1):hover,
+.manoCPU div:first-child:nth-last-child(2) ~ div:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(10px) rotate(-10deg) scale(1.2);
+}
+.manoCPU div:first-child:nth-last-child(2):nth-child(2):hover,
+.manoCPU div:first-child:nth-last-child(2) ~ div:nth-child(2):hover {
+  z-index: 2;
+  transform: translate(-10px) rotate(10deg) scale(1.2);
+}
+.manoCPU div:first-child:nth-last-child(1):nth-child(1),
+.manoCPU div:first-child:nth-last-child(1) ~ div:nth-child(1) {
+  transform: translateY(5px) rotate(0deg);
+  top: 10px;
+  right: 0px;
+}
+.manoCPU div:first-child:nth-last-child(1):nth-child(1):hover,
+.manoCPU div:first-child:nth-last-child(1) ~ div:nth-child(1):hover {
+  z-index: 2;
+  transform: translate(0px) rotate(0deg) scale(1.2);
 }
 
 .cartaJugador {
@@ -75,28 +196,6 @@ body {
   background-position-y: -510.8px;
   cursor: pointer;
 }
-.cartaJugador:nth-child(1):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(-15deg) scale(1.2);
-}
-.cartaJugador:nth-child(2):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(0deg) scale(1.2);
-}
-.cartaJugador:nth-child(3):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(15deg) scale(1.2);
-}
-.cartaJugador:nth-child(1) {
-  transform: translateY(0px) rotate(-20deg);
-  top: 10px;
-  right: -15px;
-}
-.cartaJugador:nth-child(3) {
-  transform: translateY(0px) rotate(20deg);
-  top: 10px;
-  right: 15px;
-}
 
 .cartaCPU {
   height: 128px;
@@ -109,28 +208,6 @@ body {
   border-radius: 10px;
   background-position-x: -83.3px;
   background-position-y: -510.8px;
-}
-.cartaCPU:nth-child(1):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(-15deg) scale(1.2);
-}
-.cartaCPU:nth-child(2):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(0deg) scale(1.2);
-}
-.cartaCPU:nth-child(3):hover {
-  z-index: 2;
-  transform: translate(-20px) rotate(15deg) scale(1.2);
-}
-.cartaCPU:nth-child(1) {
-  transform: translateY(0px) rotate(-20deg);
-  top: 10px;
-  right: -15px;
-}
-.cartaCPU:nth-child(3) {
-  transform: translateY(0px) rotate(20deg);
-  top: 10px;
-  right: 15px;
 }
 
 .manoJugadorPlay {
@@ -158,7 +235,6 @@ body {
   background-size: 1000px;
   background-position-x: -83.3px;
   background-position-y: -510.8px;
-  visibility: hidden;
   border: 3px solid black;
   border-radius: 10px;
   transform: scale(0.8);
@@ -171,7 +247,6 @@ body {
   background-size: 1000px;
   background-position-x: -83.3px;
   background-position-y: -510.8px;
-  visibility: hidden;
   border: 3px solid black;
   border-radius: 10px;
   transform: scale(0.8);
@@ -296,18 +371,30 @@ body {
   width: 100px;
   overflow: hidden;
   list-style: none;
-  background-color: rgb(98, 108, 212);
+  background-color: black;
   font-size: 13px;
   font-family: Arial, Helvetica, sans-serif;
   color: rgb(255, 255, 255);
-  cursor: pointer;
   border-radius: 10px 10px 10px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-items: center;
-  padding: 5px 0px;
-  gap: 15px;
+}
+#tablero .opcion li {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.opcionHover {
+  cursor: pointer;
+}
+.opcionHover:hover {
+  background-color: red;
 }
 
 .contador {
@@ -318,7 +405,7 @@ body {
   box-shadow: 7px 7px lightgrey;
   border: 5px solid grey;
   border-radius: 10px;
-  background-color: #a3c891;
+  background-color: #df6353;
   width: max-content;
   height: 265px;
   display: flex;
@@ -328,7 +415,7 @@ body {
 }
 .contador table th {
   font-size: 20px;
-  border: 10px solid #a3c891;
+  border: 10px solid #df6353;
   border-collapse: collapse;
   font-family: "Jua", sans-serif;
   text-align: center;
@@ -435,32 +522,30 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 100px;
+  gap: 65px;
 }
 .menuPrincipal ul {
   list-style: none;
-  font-size: 30px;
-  font-family: "Zilla Slab Highlight", cursive;
-  color: black;
+  font-size: 25px;
+  font-family: "Arimo", sans-serif;
+  color: white;
   text-align: center;
 }
 .menuPrincipal ul li {
-  padding-right: 10px;
-  padding-left: 10px;
+  border-radius: 10px;
+  background-color: black;
+  padding: 5px 15px;
   cursor: pointer;
 }
 .menuPrincipal ul li a {
-  color: black;
+  color: white;
   text-decoration: none;
 }
-.menuPrincipal ul li a:hover {
-  color: red;
-}
 .menuPrincipal ul li:not(:last-child) {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 .menuPrincipal ul li:hover {
-  color: red;
+  background-color: red;
 }
 
 .icon {
@@ -525,22 +610,26 @@ body {
   margin: auto;
   width: 60%;
   list-style: none;
-  font-size: 30px;
-  font-family: "Zilla Slab Highlight", cursive;
-  color: black;
+  font-size: 25px;
+  font-family: "Arimo", sans-serif;
+  color: white;
   text-align: center;
 }
 .partidas ul li {
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 45px;
   padding-right: 10px;
   padding-left: 10px;
-  margin-bottom: 5px;
+  background-color: black;
 }
-.partidas ul li a {
-  color: black;
-  text-decoration: none;
+.partidas ul li:not(:last-child) {
+  margin-bottom: 10px;
 }
 .partidas ul li:hover {
-  color: red;
+  background-color: red;
 }
 
 .partida {
@@ -590,6 +679,10 @@ body {
   display: flex;
   flex-direction: row;
   gap: 20px;
+}
+
+.ocultarCarta {
+  display: none;
 }
 
 /*# sourceMappingURL=styles.css.map */

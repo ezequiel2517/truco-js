@@ -84,7 +84,7 @@ async function cantarTruco({ innerHTML: canto }) {
 
 //Cantar Envido al hacer click en la opción
 async function cantarEnvido({ innerText: canto }) {
-    interfaz.deshabilitarButton("Envido");
+    interfaz.deshabilitarRespuesta("Envido");
     let cantoEnvido = canto.split("(")[0].trim();
     juego.setEnvido(cantoEnvido);
     await interfaz.dialogue(cantoEnvido, "Jugador");
@@ -121,6 +121,7 @@ async function cantarFlor() {
 
 //Cantar Quiero y resolver Envido o Truco
 async function quiero({ parentElement: { id: opcion } }) {
+    interfaz.deshabilitarRespuesta(opcion);
     await interfaz.dialogue("QUIERO", "Jugador")
     let opcionEspera = opcion;
     switch (opcion) {

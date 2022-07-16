@@ -110,25 +110,28 @@ class Interfaz {
         let parent = document.querySelector(`#${opcion}`);
         let button = parent.firstElementChild;
         parent.style.backgroundColor = "gray";
-        parent.style.cursor = "default";
         button.removeAttribute("onclick");
+        button.style.cursor = "default";
+        button.classList.remove("opcionHover");
     }
 
     //Habilitar botón de canto
     habilitarButton(opcion, texto) {
         if (opcion === "Envido") {
             let parent = document.querySelector(`#${opcion}`);
-            parent.style.cursor = "pointer";
-            parent.style.backgroundColor = "rgb(98, 108, 212)";
+            parent.style.backgroundColor = "black";
             let button = parent.lastElementChild;
             button.innerText = texto;
+            button.classList.add("opcionHover");
+            button.style.cursor = "pointer";
             let opcionTablero = document.querySelector(`#${opcion}`);
             button.onclick = function () {
                 (button.innerText.includes("+")) ?
                     button.innerText = button.innerText.replace("+", "-") : button.innerText = button.innerText.replace("-", "+");
-                if (document.querySelector("#" + this.parentElement.id).firstElementChild.style.display !== "inline")
+                if (document.querySelector("#" + this.parentElement.id).firstElementChild.style.display !== "flex")
                     for (let b of document.querySelector("#" + this.parentElement.id).children) {
-                        b.style.display = "inline";
+                        b.style.display = "flex";
+                        b.classList.add("opcionHover");
                     }
                 else {
                     let cantos = Array.from(document.querySelector("#" + this.parentElement.id).children);
@@ -139,26 +142,30 @@ class Interfaz {
             };
             let buttone = document.createElement("li");
             buttone.innerHTML = "ENVIDO";
+            buttone.style.cursor = "pointer";
             buttone.style.display = "none";
             buttone.setAttribute("onclick", "cantar" + opcion + "(this)")
             opcionTablero.prepend(buttone);
             let buttonre = document.createElement("li");
             buttonre.innerHTML = "REAL ENVIDO";
+            buttonre.style.cursor = "pointer";
             buttonre.style.display = "none";
             buttonre.setAttribute("onclick", "cantar" + opcion + "(this)")
             opcionTablero.prepend(buttonre);
             let buttonfe = document.createElement("li");
             buttonfe.innerHTML = "FALTA ENVIDO";
+            buttonfe.style.cursor="pointer";
             buttonfe.style.display = "none";
             buttonfe.setAttribute("onclick", "cantar" + opcion + "(this)")
             opcionTablero.prepend(buttonfe);
         }
         else {
             let parent = document.querySelector(`#${opcion}`);
-            parent.style.backgroundColor = "rgb(98, 108, 212)";
-            parent.style.cursor = "pointer";
+            parent.style.backgroundColor = "black";
             let button = parent.lastElementChild;
             button.innerText = texto;
+            button.classList.add("opcionHover");
+            button.style.cursor = "pointer";
             button.setAttribute("onclick", "cantar" + opcion + "(this)");
         }
     }
@@ -166,24 +173,26 @@ class Interfaz {
     //Habilitar tablero de cantos de respuesta
     habilitarRespuesta(opcion, respuesta) {
         let parent = document.querySelector(`#${opcion}`);
-        parent.style.backgroundColor = "rgb(98, 108, 212)";
-        parent.style.cursor = "pointer";
+        parent.style.backgroundColor = "black";
         while (parent.childElementCount > 1) {
             parent.removeChild(parent.firstChild);
         }
         if (opcion === "Truco" && respuesta !== "") {
             let buttonRespuesta = parent.lastElementChild;
             buttonRespuesta.setAttribute("onclick", "cantarTruco(this);");
+            buttonRespuesta.classList.add("opcionHover");
             buttonRespuesta.innerText = respuesta;
         }
         let opcionTablero = document.querySelector(`#${opcion}`);
         let noQuiero = document.createElement("li");
         noQuiero.innerHTML = "NO QUIERO";
+        noQuiero.classList.add("opcionHover");
         noQuiero.setAttribute("onclick", "noQuiero(this);")
         opcionTablero.prepend(noQuiero);
 
         let quiero = document.createElement("li");
         quiero.innerHTML = "QUIERO";
+        quiero.classList.add("opcionHover");
         quiero.setAttribute("onclick", "quiero(this);");
         opcionTablero.prepend(quiero);
         if (opcion === "Envido" && respuesta !== "") {
@@ -196,6 +205,7 @@ class Interfaz {
                 let buttonRespuesta = document.createElement("li");
                 buttonRespuesta.innerHTML = ordenEnvido[i];
                 buttonRespuesta.setAttribute("onclick", `cantar${opcion}(this);`);
+                buttonRespuesta.classList.add("opcionHover");
                 opcionTablero.prepend(buttonRespuesta);
             }
         }
@@ -244,7 +254,8 @@ class Interfaz {
     deshabilitarTablero() {
         const opciones = ["Truco", "Envido", "Flor"];
         for (let canto of opciones) {
-            this.deshabilitarButton(`${canto}`);
+            // this.deshabilitarButton(`${canto}`);
+            this.deshabilitarRespuesta(`${canto}`);
         }
         const back = document.querySelector(".backGame");
         back.style.visibility = "hidden";
@@ -296,6 +307,26 @@ class Interfaz {
 
     //Reset de interfaz
     reset() {
+        const cartasCPU = document.querySelector(".manoCPU");
+        while (cartasCPU.childElementCount > 0) {
+            cartasCPU.removeChild(cartasCPU.lastElementChild);
+        }
+
+        for (let i=0; i<3; i++){
+            const carta = document.createElement("div");
+            carta.classList.add("cartaCPU");
+            cartasCPU.appendChild(carta);
+        }
+
+        const cartasJugador = document.querySelector(".manoJugador");
+        while (cartasJugador.childElementCount > 0) {
+            cartasJugador.removeChild(cartasJugador.lastElementChild);
+        }
+        for (let i=0; i<3; i++){
+            const carta = document.createElement("div");
+            carta.classList.add("cartaJugador");
+            cartasJugador.appendChild(carta);
+        }
         this.deshabilitarRespuesta("Envido");
         this.deshabilitarRespuesta("Truco");
         for (let carta of document.getElementsByClassName("cartaJugadorPlay")) {
@@ -304,12 +335,8 @@ class Interfaz {
         for (let carta of document.getElementsByClassName("cartaCPUPlay")) {
             carta.style.visibility = "hidden";
         }
-        for (let carta of document.getElementsByClassName("cartaJugador")) {
-            carta.style.visibility = "visible";
-            carta.removeAttribute("id");
-        }
         for (let carta of document.getElementsByClassName("cartaCPU")) {
-            carta.style.visibility = "visible";
+            carta.style.display="flex"
             carta.style.backgroundPositionX = "-83.3px";
             carta.style.backgroundPositionY = "-510.8px";
         }
@@ -353,6 +380,7 @@ class Interfaz {
         else if (carta.includes("Copa")) {
             document.getElementById(carta).style.backgroundPositionY = -127.7 * 1 + "px";
         }
+        document.getElementById(carta).style.display="flex"
         document.getElementById(carta).style.backgroundPositionX = -83.3 * (carta.split(" ")[0] - 1) + "px";
     }
 
@@ -368,9 +396,14 @@ class Interfaz {
             cartaJugador = "cartaJugadorPlay"
             posicionCarta = manoJugador.cartasJugadas() - 1;
         }
-        document.getElementById(carta).style.visibility = "hidden";
-        document.getElementsByClassName(cartaJugador)[posicionCarta].style.cssText = document.getElementById(carta).style.cssText;
-        document.getElementsByClassName(cartaJugador)[posicionCarta].style.visibility = "visible";
+        const cartaMesa = document.getElementsByClassName(cartaJugador)[posicionCarta];
+        const cartaJugada = document.getElementById(carta);
+        cartaMesa.style.cssText = cartaJugada.style.cssText;
+        if (jugador==="CPU" && manoCPU.cartasJugadas() - 1 === 2)
+            cartaJugada.style.visibility = "hidden";
+         else
+            cartaJugada.remove()
+        // cartaJugada.style.display = "none";
     }
 
     //Borrar puntos del tablero
@@ -400,7 +433,7 @@ class Interfaz {
             const opciones = document.querySelector(".menuOpciones").children;
             for (let opcion of opciones) {
                 if (opcion.style.display === "none")
-                    opcion.style.display = "inline-block";
+                    opcion.style.display = "block";
             }
         });
     }
